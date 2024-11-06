@@ -12,6 +12,12 @@ void Framework::Init(int width, int height, const std::string& name)
     Utils::Init();
     SCENE_MGR.Init();
     InputMgr::Init();
+
+    // 커서 설정
+    sf::Image cursorImage;
+    cursorImage.loadFromFile("Graphics/crosshair.png");
+    cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0, 0 });
+    window.setMouseCursor(cursor);
 }
 
 void Framework::Do()
@@ -30,6 +36,10 @@ void Framework::Do()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::GainedFocus)
+            {
+                window.setMouseCursor(cursor);
+            }
             InputMgr::UpdateEvent(event);
         }
         InputMgr::Update(deltaTime);
@@ -46,5 +56,6 @@ void Framework::Do()
 void Framework::Release()
 {
     SCENE_MGR.Release();
+    TEXTURE_MGR.Unload("Graphics/crosshair.png");
     FONT_MGR.Unload("fonts/DS-DIGI.ttf");
 }

@@ -3,7 +3,6 @@
 #include "SceneDev1.h"
 #include "SceneDev2.h"
 
-
 void SceneMgr::Init()
 {
 	// scenes.push_back(new SceneDev1());	
@@ -44,25 +43,10 @@ void SceneMgr::ChangeScene(SceneIds id)
 		delete currentSceneRaw;
 	switch (id)
 	{
-		case SceneIds::SceneWave1: {
-			currentSceneRaw = new SceneWave1();
-		} break;
-		case SceneIds::SceneWave2: {
-			currentSceneRaw = new SceneWave2();
-			break;
-		}
-		case SceneIds::SceneWave3: {
-			//currentSceneRaw = new SceneWave1();
-			break;
-		}
-		case SceneIds::SceneWave4: {
-			//currentSceneRaw = new SceneWave1();
-			break;
-		}
-		case SceneIds::SceneWave5: {
-			//currentSceneRaw = new SceneWave1();
-			break;
-		}
+	case SceneIds::SceneWave1: currentSceneRaw = new SceneWave1(); break;
+	case SceneIds::SceneWave2: currentSceneRaw = new SceneWave2(); break;
+	case SceneIds::SceneWave3: currentSceneRaw = new SceneWave3(); break;
+		
 	}
 
 	currentSceneRaw->Enter();

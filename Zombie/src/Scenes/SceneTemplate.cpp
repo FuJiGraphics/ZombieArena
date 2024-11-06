@@ -51,8 +51,6 @@ void SceneTemplate::Init()
 	// 타일맵 크기
 	const auto& tilemapSize = tilemap->GetLength();
 	const auto& tilemapPos = tilemap->GetPosition();
-	std::cout << "tilemap.x = " << tilemapPos.x << "tilemap.y = " << tilemapPos.y << std::endl;
-	std::cout << "tilemapSize.x = " << tilemapSize.x << "tilemapSize.y = " << tilemapSize.y << std::endl;
 	// 스폰 구역 설정
 	spawnLeft.SetPosition(tilemapPos.x - tilemapSize.x * 0.38f, tilemapPos.y);
 	spawnLeft.SetSize(tilemapSize.x * 0.15f, tilemapSize.y * 0.90f);

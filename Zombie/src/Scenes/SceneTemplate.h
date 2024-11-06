@@ -71,9 +71,9 @@ private:
 	Wall walls[4];
 	ItemGenerator itemGen;
 
-	bool enabledDebugBox = true;
-	bool enabledDebugWall = true;
-	bool enabledDebugArea = true;
+	bool enabledDebugBox = false;
+	bool enabledDebugWall = false;
+	bool enabledDebugArea = false;
 
 	bool isInit = false;
 };

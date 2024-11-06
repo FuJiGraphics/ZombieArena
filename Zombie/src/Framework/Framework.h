@@ -13,6 +13,7 @@ protected:
 
 	sf::RenderWindow window;
 
+	sf::Cursor cursor;
 	sf::Clock clock;
 	float timeScale = 1.f;
 
