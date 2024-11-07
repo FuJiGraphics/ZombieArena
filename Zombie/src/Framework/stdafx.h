@@ -31,3 +31,7 @@
 #include "Scenes/SceneWave2.h"
 #include "SceneS/SceneWave3.h"
 #include "Scenes/SceneWave4.h"
+
+#include "Items/Item.h"
+#include "Items/HealingPotion.h"
+#include "Items/Ammo.h"

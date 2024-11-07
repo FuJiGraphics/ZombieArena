@@ -69,22 +69,28 @@ void ItemGenerator::SetSize(float w, float h)
 	area.SetSize({ w, h});
 }
 
-Item* ItemGenerator::GenItem()
+Item* ItemGenerator::GenItem(ItemType type)
 {
-	// int ran = Utils::RandomRange(1, 3);
-	int ran = 1;
-	std::string tex = "";
-	switch (ran)
+	auto* scene = (SceneWave1*)SCENE_MGR.GetCurrentScene();
+	switch (type)
 	{
-		case 1:
-			tex = "graphics/health_pickup.png";
-			break;
-		case 2:break;
-		case 3:break;
+		case ItemType::HealingPotion: {
+			auto* result = scene->itemPool.Take<HealingPotion>();
+			result->SetTexture("graphics/health_pickup.png");
+			result->SetBoundBox();
+			result->SetEnableCollide(true);
+			result->SetPosition(area.Spawn());
+			result->SetDuration(60.f);
+			return result;
+		}
+		case ItemType::Ammo: {
+			auto* result = scene->itemPool.Take<Ammo>();
+			result->SetTexture("graphics/ammo_pickup.png");
+			result->SetBoundBox();
+			result->SetEnableCollide(true);
+			result->SetPosition(area.Spawn());
+			result->SetDuration(60.f);
+			return result;
+		}
 	}
-	Item* item = itemPool.Take();
-	item->SetTextureId(tex);
-	item->Init(); 
-	item->SetPosition(area.Spawn());
-	return item;
 }

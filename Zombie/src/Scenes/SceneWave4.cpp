@@ -11,11 +11,11 @@ void SceneWave4::Init()
 	currWave = 4;
 
 	// Player
-	playerData.attackDelay = 0.001f;
+	playerData.attackDelay = 0.01f;
 
 	// Item
 	elapItem = 0.0f;
-	ItemZenDelay = 15.0f;
+	ItemZenDelay = 0.5f;
 
 	// Zombies
 	elapR = 0.0f;

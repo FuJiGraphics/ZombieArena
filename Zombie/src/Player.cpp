@@ -100,9 +100,10 @@ void Player::Update(float dt)
 	delayElap += dt;
 	if (scene && InputMgr::GetMouseButton(sf::Mouse::Left))
 	{
-		if (delayElap >= delay)
+		if (ammo > 0 && delayElap >= delay)
 		{
 			delayElap = 0.0f;
+			ammo -= 1;
 			const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 15.0f, newDir);
 			Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
 			bullet->Init();
@@ -169,6 +170,21 @@ void Player::SetDebugColor(sf::Color color)
 	boundBox.setOutlineColor(color);
 }
 
+void Player::SetAmmo(unsigned int ammo)
+{
+	this->ammo = ammo;
+}
+
+void Player::AddHP(float hp)
+{
+	this->hp += hp;
+}
+
+void Player::AddAmmo(unsigned int ammo)
+{
+	this->ammo += ammo;
+}
+
 void Player::OnCollide()
 {
 	this->SetPosition(prevPos);
@@ -185,4 +201,9 @@ void Player::OnDamage(int damage)
 		isDie = true;
 		this->SetActive(false);
 	}
+}
+
+unsigned int Player::GetAmmo() const
+{
+	return ammo;
 }

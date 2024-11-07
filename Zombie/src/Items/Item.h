@@ -8,9 +8,10 @@ protected:
 	Item& operator=(const Item&) = delete;
 
 public:
-	Item(const std::string& name = "");
+	Item() = default;
 	virtual ~Item() = default;
 
+	void SetSortingLayer(SortingLayers layer, int order);
 	void SetPosition(const sf::Vector2f& pos) override;
 	void SetRotation(float angle) override;
 	void SetScale(const sf::Vector2f& scale) override;
@@ -25,11 +26,26 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 public:
-	void SetTextureId(const std::string& texId);
+	void SetDuration(float duration);
+	void SetTexture(const std::string& path);
+	void SetObjectPool(ObjectPool<Item>& myPool);
+	void SetBoundBox(float w = 0.0f, float h = 0.0f);
+	void SetEnableCollide(bool enabled);
+
+	bool EnabledCollide() const;
+	sf::FloatRect GetBoundBox() const;
+
+	// 상호작용 설정
+	virtual void OnCollide(Player& player);
+	virtual void OnCollide(Zombie& player);
 
 private:
-	std::string texId;
 	sf::Sprite body;
+	float duration = 0.0f;
+	float elap = 0.0f;
+	ObjectPool<Item>* myPool = nullptr;
 	sf::RectangleShape boundBox;
+	bool isCollide = false;
+	bool enabledCollide = false;
 };
 

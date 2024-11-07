@@ -8,6 +8,7 @@
 #include "ItemGenerator.h"
 #include "UIHub.h"
 #include "Effect.h"
+#include "Items/Item.h"
 
 class Zombie;
 
@@ -15,7 +16,8 @@ struct PlayerData
 {
 	float hp = 100.0f;
 	float moveSpeed = 100.0f;
-	float attackDelay = 0.1f;
+	float attackDelay = 1.0f;
+	unsigned int ammoCount = 500;
 };
 
 class SceneTemplate : public Scene
@@ -46,13 +48,20 @@ public:
 	void DeleteUsedBullets();
 	void DeleteDieZombies();
 	void DeleteEffects();
+	void DeleteItems();
+
 public:
-	ObjectPool<Effect> effectPool;
-	ObjectPool<Zombie> zombiePool;
-	ObjectPool<Bullet> bulletPool;
-	std::list<Bullet*> delBulletList;
-	std::list<Zombie*> delZombieList;
-	std::list<Effect*> delEffectList;
+	ObjectPool<Effect>	effectPool;
+	ObjectPool<Zombie>	zombiePool;
+	ObjectPool<Bullet>	bulletPool;
+	ObjectPool<Item>	itemPool;
+	std::list<Bullet*>	delBulletList;
+	std::list<Zombie*>	delZombieList;
+	std::list<Effect*>	delEffectList;
+	std::list<Item*>	delItemList;
+
+	// 충돌 리스트
+	std::list<Item*>	EnableCollideItemList;
 
 	// Item
 	float elapItem = 0.0f;

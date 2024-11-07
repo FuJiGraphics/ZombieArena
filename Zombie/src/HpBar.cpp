@@ -99,12 +99,14 @@ void HpBar::SetMaxHp(float hp)
 
 void HpBar::SetHp(float hp)
 {
-	this->hp = hp;
+	this->hp = hp; 
+	ResetStrideHp();
 }
 
 void HpBar::AddHp(float hp)
 {
-	this->hp += hp;
+	this->hp += hp; 
+	ResetStrideHp();
 }
 
 void HpBar::SetColor(sf::Color color)
@@ -141,17 +143,31 @@ bool HpBar::operator>=(float d)
 HpBar& HpBar::operator+=(float d)
 {
 	hp += d;
+
+	ResetStrideHp();
 	return (*this);
 }
 
 HpBar& HpBar::operator-=(float d)
 {
 	hp -= d;
+
+	ResetStrideHp();
 	return (*this);
 }
 
 HpBar& HpBar::operator=(float d)
 {
 	hp = d;
+
+	ResetStrideHp();
 	return (*this);
+}
+
+void HpBar::ResetStrideHp()
+{
+	if (this->hp > maxHp)
+		this->hp = maxHp;
+	if (this->hp <= 0.0f)
+		this->hp = 0.0f;
 }

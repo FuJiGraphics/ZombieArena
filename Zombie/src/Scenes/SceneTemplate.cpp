@@ -46,6 +46,7 @@ void SceneTemplate::Init()
 	player->SetHP(playerData.hp);
 	player->SetDelay(playerData.attackDelay);
 	player->SetSpeed(playerData.moveSpeed);
+	player->SetAmmo(playerData.ammoCount);
 	player->Init();
 
 	// 타일맵 크기
@@ -91,6 +92,7 @@ void SceneTemplate::Init()
 	uihub.Init();
 	uihub.SetTargetCamera(&worldView);
 	uihub.SetZombieCount(CurrZombieCount);
+	uihub.SetAmmo(player->GetAmmo());
 	uihub.SetWave(currWave);
 
 	// 좀비 정보
@@ -130,6 +132,8 @@ void SceneTemplate::Enter()
 	TEXTURE_MGR.Load("Graphics/chaser.png");
 	TEXTURE_MGR.Load("Graphics/bullet.png");
 	TEXTURE_MGR.Load("Graphics/blood.png");
+	TEXTURE_MGR.Load("graphics/health_pickup.png");
+	TEXTURE_MGR.Load("graphics/ammo_pickup.png");
 }
 
 void SceneTemplate::Exit()
@@ -146,6 +150,8 @@ void SceneTemplate::Exit()
 	TEXTURE_MGR.Unload("Graphics/chaser.png");
 	TEXTURE_MGR.Unload("Graphics/bullet.png");
 	TEXTURE_MGR.Unload("Graphics/blood.png");
+	TEXTURE_MGR.Unload("graphics/health_pickup.png");
+	TEXTURE_MGR.Unload("graphics/ammo_pickup.png");
 	for (auto zombie : zombiePool.unused)
 		RemoveGo(zombie);
 	for (auto zombie : zombiePool.used)
@@ -166,6 +172,7 @@ void SceneTemplate::Update(float dt)
 	this->DeleteUsedBullets();
 	this->DeleteDieZombies();
 	this->DeleteEffects();
+	this->DeleteItems();
 
 	Scene::Update(dt);
 	if (InputMgr::GetKeyDown(sf::Keyboard::Num9))
@@ -215,7 +222,8 @@ void SceneTemplate::Update(float dt)
 	if (elapItem >= ItemZenDelay)
 	{
 		elapItem = 0.0f;
-		AddGo(itemGen.GenItem());
+		int ran = Utils::RandomRange(0, 1);
+		AddGo(itemGen.GenItem(static_cast<ItemType>(ran)));
 	}
 
 	if (InputMgr::GetKeyDown(sf::Keyboard::Num1))
@@ -247,6 +255,7 @@ void SceneTemplate::Update(float dt)
 		return;
 	}
 
+	uihub.SetAmmo(player->GetAmmo());
 	uihub.SetZombieCount(CurrZombieCount);
 	uihub.SetScore(score);
 	uihub.Update(dt);
@@ -328,6 +337,22 @@ void SceneTemplate::OnCollide()
 		player->SetDebugColor(sf::Color::Red);
 	else
 		player->SetDebugColor(sf::Color::Green);
+
+	// 아이템 충돌 처리
+	for (auto& item : EnableCollideItemList)
+	{
+		if (player->IsActive() && !player->IsDie())
+		{
+			if (item->IsActive() && item->EnabledCollide())
+			{
+				if (item->GetBoundBox().intersects(player->GetBoundBox()))
+				{
+					item->OnCollide(*player);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void SceneTemplate::DeleteUsedBullets()
@@ -384,6 +409,26 @@ void SceneTemplate::DeleteEffects()
 		Effect* del = delEffectList.front();
 		delEffectList.pop_front();
 		effectPool.unused.remove(del);
+		gameObjects.remove(del);
+		delete del;
+		del = nullptr;
+	}
+}
+
+void SceneTemplate::DeleteItems()
+{
+	for (auto& item : itemPool.unused)
+	{
+		if (!item->IsActive())
+		{
+			delItemList.push_back(item);
+		}
+	}
+	while (!delItemList.empty())
+	{
+		Item* del = delItemList.front();
+		delItemList.pop_front();
+		itemPool.unused.remove(del);
 		gameObjects.remove(del);
 		delete del;
 		del = nullptr;

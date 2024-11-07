@@ -37,9 +37,13 @@ public:
 	sf::FloatRect GetBoundBox() const;
 	void SetBoundBox(float x, float y, float width, float height);
 	void SetDebugColor(sf::Color color);
+	void SetAmmo(unsigned int ammo);
 
+	void AddHP(float hp);
+	void AddAmmo(unsigned int ammo);
 	void OnCollide();
 	void OnDamage(int damage);
+	unsigned int GetAmmo() const;
 
 	bool IsDie() const { return isDie; }
 
@@ -50,6 +54,7 @@ protected:
 	float speed;
 	Camera* view;
 	HpBar hp;
+	unsigned int ammo = 0;
 
 	SceneTemplate* scene = nullptr;
 	float delay;

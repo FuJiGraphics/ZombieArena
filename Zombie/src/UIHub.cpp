@@ -23,6 +23,12 @@ void UIHub::Init()
 	score.SetPosition(0.0f, 0.0f);
 	score.SetCharacterSize(30);
 	score.SetBaseString("SCORE: ");
+
+	ammo.SetOrigin(Origins::BR);
+	ammo.SetFont("fonts/zombiecontrol.ttf");
+	ammo.SetPosition(0.0f, 0.0f);
+	ammo.SetCharacterSize(30);
+	ammo.SetBaseString("AMMO: ");
 }
 
 void UIHub::Release()
@@ -48,6 +54,8 @@ void UIHub::Update(float dt)
 	waveCount.SetOrigin(Origins::TR);
 	score.SetPosition(pos.x - halfW * 0.7f, pos.y - halfH * 0.9f);
 	score.SetOrigin(Origins::TL);
+	ammo.SetPosition(pos.x - halfW * 0.7f, pos.y + halfH * 0.7f);
+	ammo.SetOrigin(Origins::TL);
 }
 
 void UIHub::Draw(sf::RenderWindow& window)
@@ -55,6 +63,13 @@ void UIHub::Draw(sf::RenderWindow& window)
 	zombieCount.Draw(window);
 	waveCount.Draw(window);
 	score.Draw(window);
+	ammo.Draw(window);
+}
+
+void UIHub::SetAmmo(int ammo)
+{
+	if (this->ammo != ammo)
+		this->ammo = ammo;
 }
 
 void UIHub::SetScore(int score)
@@ -88,4 +103,6 @@ void UIHub::SetTargetCamera(Camera* target)
 	waveCount.SetOrigin(Origins::TR);
 	score.SetPosition(pos.x - halfW * 0.7f, pos.y - halfH * 0.9f);
 	score.SetOrigin(Origins::TL);
+	ammo.SetPosition(pos.x - halfW * 0.7f, pos.y + halfH * 0.7f);
+	ammo.SetOrigin(Origins::TR);
 }

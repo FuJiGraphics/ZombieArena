@@ -54,6 +54,26 @@ public:
 		return obj;
 	}
 
+	template<typename _Ty, typename ...Args>
+	T* Take(Args&& ...args)
+	{
+		if (unused.empty())
+		{
+			auto obj = new _Ty(std::forward(args)...);
+			obj->Init();
+			obj->Reset();
+			used.push_back(obj);
+			return obj;
+		}
+
+		auto obj = unused.front();
+		unused.pop_front();
+		used.push_back(obj);
+		obj->SetActive(true);
+		obj->Reset();
+		return obj;
+	}
+
 	void Return(T* obj)
 	{
 		auto find = std::find(used.begin(), used.end(), obj);

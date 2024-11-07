@@ -1,7 +1,16 @@
 #pragma once
 #include "SpawnArea.hpp"
 #include "GameObject.h"
-#include "Item.h"
+#include "Items/Item.h"
+
+enum class ItemType
+{
+	HealingPotion,
+	Ammo,
+};
+
+class HealingPotion;
+class Ammo;
 
 class ItemGenerator : public GameObject
 {
@@ -28,7 +37,7 @@ public:
 public:
 	void SetSize(const sf::Vector2f size);
 	void SetSize(float w, float h);
-	Item* GenItem();
+	Item* GenItem(ItemType type);
 
 protected:
 	SpawnArea area;

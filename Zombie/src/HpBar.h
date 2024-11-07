@@ -42,6 +42,9 @@ public:
 	HpBar& operator=(float d);
 
 private:
+	void ResetStrideHp();
+
+private:
 	float maxHp = 100.f;
 	float hp = 100.f;
 	sf::RectangleShape bar;
