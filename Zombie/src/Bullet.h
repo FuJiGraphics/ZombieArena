@@ -38,6 +38,7 @@ public:
 
 	sf::FloatRect GetBoundBox() const;
 	void OnCollide(Zombie* zombie);
+	void OnCollide();
 	bool IsDie() const { return isDie; }
 
 private:

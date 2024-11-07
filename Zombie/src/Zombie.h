@@ -92,5 +92,9 @@ protected:
 	ObjectPool<Zombie>* myPool = nullptr;
 	ObjectPool<Effect>* effectPool = nullptr;
 	sf::RectangleShape boundBox;
+
+	// HP Ç¥½Ã
+	float hpDurationMax = 3.0f;
+	float hpDurationElap = 0.0f;
 };
 

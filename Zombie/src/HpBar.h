@@ -48,6 +48,7 @@ private:
 	float maxHp = 100.f;
 	float hp = 100.f;
 	sf::RectangleShape bar;
+	sf::RectangleShape maxBar;
 	sf::Vector2f size;
 	sf::Color color;
 };

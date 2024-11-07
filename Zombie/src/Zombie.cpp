@@ -66,6 +66,9 @@ void Zombie::Update(float dt)
 	if (isDie)
 		return;
 
+	// hp Ç¥½Ã
+	hpDurationElap -= dt;
+
 	if (player != nullptr)
 	{
 		sf::Vector2f dir = (player->GetPosition() - position);
@@ -141,7 +144,9 @@ void Zombie::Draw(sf::RenderWindow& window)
 		return;
 
 	window.draw(body);
-	hp.Draw(window);
+
+	if (hpDurationElap > 0.0f)
+		hp.Draw(window);
 
 	const auto* scene = (const SceneTemplate*)SCENE_MGR.GetCurrentScene();
 	if (scene->IsOnDebugBox())
@@ -280,7 +285,7 @@ void Zombie::OnDamage(int damage)
 {
 	hp -= damage;
 	auto& scene = *(SceneTemplate*)SCENE_MGR.GetCurrentScene();
-
+	hpDurationElap = hpDurationMax;
  	if (hp <= 0.0f)
 	{
 		hp = 0.0f;

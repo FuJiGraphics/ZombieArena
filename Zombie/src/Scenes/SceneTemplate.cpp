@@ -359,7 +359,24 @@ void SceneTemplate::OnCollide()
 			if (!zombie->IsActive() || zombie->IsDie())
 				continue;
 
-			result = (wall.Intersect(*zombie)) ? true : result;
+			if (wall.Intersect(*zombie))
+			{
+				// 충돌
+			}
+		}
+	}
+
+	for (auto& wall : walls)
+	{
+		for (auto& bullet : bulletPool)
+		{
+			if (!bullet->IsActive() || bullet->IsDie())
+				continue;
+
+			if (wall.Intersect(*bullet))
+			{
+				// 충돌
+			}
 		}
 	}
 	if (result)

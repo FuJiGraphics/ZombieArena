@@ -10,6 +10,9 @@ HpBar::HpBar()
 	this->bar.setOutlineColor(sf::Color::Black);
 	this->bar.setOutlineThickness(1.f);
 	this->SetOrigin(Origins::MC);
+	this->maxBar.setFillColor({128, 128, 128, 255});
+	this->maxBar.setOutlineColor(sf::Color::Black);
+	this->maxBar.setOutlineThickness(1.f);
 }
 
 HpBar::~HpBar()
@@ -21,18 +24,21 @@ void HpBar::SetPosition(const sf::Vector2f& pos)
 {
 	GameObject::SetPosition(pos);
 	bar.setPosition(pos);
+	maxBar.setPosition(pos);
 }
 
 void HpBar::SetRotation(float angle)
 {
 	GameObject::SetRotation(angle);
 	bar.setRotation(angle);
+	maxBar.setRotation(angle);
 }
 
 void HpBar::SetScale(const sf::Vector2f& scale)
 {
 	GameObject::SetScale(scale);
 	bar.setScale(scale);
+	maxBar.setScale(scale);
 }
 
 void HpBar::SetOrigin(Origins preset)
@@ -41,6 +47,7 @@ void HpBar::SetOrigin(Origins preset)
 	if (preset != Origins::Custom)
 	{
 		Utils::SetOrigin(bar, preset);
+		Utils::SetOrigin(maxBar, preset);
 	}
 }
 
@@ -48,6 +55,7 @@ void HpBar::SetOrigin(const sf::Vector2f& newOrigin)
 {
 	GameObject::SetOrigin(newOrigin);
 	bar.setOrigin(newOrigin);
+	maxBar.setOrigin(newOrigin);
 }
 
 void HpBar::Init()
@@ -82,6 +90,7 @@ void HpBar::Draw(sf::RenderWindow& window)
 	else
 		bar.setFillColor(sf::Color::Red);
 	bar.setSize({ dx * hp, size.y });
+	window.draw(maxBar);
 	window.draw(bar);
 }
 
@@ -89,6 +98,7 @@ void HpBar::SetSize(float width, float height)
 {
 	size = { width, height };
 	bar.setSize(size);
+	maxBar.setSize(size);
 }
 
 void HpBar::SetMaxHp(float hp)

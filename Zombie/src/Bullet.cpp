@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Bullet.h"
 #include "Zombie.h"
+#include "Wall.h"
 
 Bullet::Bullet(const std::string& name)
 	: GameObject(name)
@@ -159,4 +160,23 @@ void Bullet::OnCollide(Zombie* zombie)
 		blood.AddAnimSequence({ 0, 200, 100, 100 }, 0, 0.02, 6);
 		blood.SetPosition({ position.x - 48.f, position.y - 48.f });
 	}
+}
+
+void Bullet::OnCollide()
+{
+	elap = 0;
+	GameObject::active = false;
+	isDie = true;
+
+	auto* scene = (SceneTemplate*)SCENE_MGR.GetCurrentScene();
+	auto& size = boundBox.getSize();
+	Effect* effect = scene->AddGo(scene->effectPool.Take());
+	effect->SetAnimationMode(true);
+	auto& blood = effect->GetAnimation();
+	blood.SetTexture(TEXTURE_MGR.Get("graphics/hit_Yellow.png"));
+	blood.SetAnimSequence({ 0, 0, 64, 64 }, 0, 0.02, 4);
+	blood.AddAnimSequence({ 0, 128, 64, 64 }, 0, 0.02, 4);
+	blood.AddAnimSequence({ 0, 192, 64, 64 }, 0, 0.02, 4);
+	blood.AddAnimSequence({ 0, 256, 64, 64 }, 0, 0.02, 4);
+	blood.SetPosition({ position.x - 48.f, position.y - 48.f });
 }

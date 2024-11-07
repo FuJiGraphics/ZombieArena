@@ -3,6 +3,7 @@
 #include "Framework/GameObject.h"
 #include "Player.h"
 #include "Zombie.h"
+#include "Bullet.h"
 
 class Wall : public GameObject
 {
@@ -25,6 +26,7 @@ public:
 
 	bool Intersect(Player& obj);
 	bool Intersect(Zombie& obj);
+	bool Intersect(Bullet& obj);
 
 public:
 	void SetSize(float width, float height);
