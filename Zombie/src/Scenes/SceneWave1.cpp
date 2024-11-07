@@ -4,6 +4,7 @@
 SceneWave1::SceneWave1()
 	: SceneTemplate(SceneIds::SceneWave1)
 {
+	currScene = SceneIds::SceneWave1;
 }
 
 void SceneWave1::Init()
@@ -22,7 +23,6 @@ void SceneWave1::Init()
 	elapL = 0.0f;
 	ZombieGenDelayL = 1.0f;
 	ZombieGenDelayR = 1.0f;
-	nextScene = SceneIds::SceneWave2;
 
 	// Zen Zombies
 	GenListL.push(ZombieType::crawler);

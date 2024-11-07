@@ -74,7 +74,7 @@ public:
 	float ZombieGenDelayR = 1.0f;
 	int GenZombieCount = 0;
 	int CurrZombieCount = 0;
-	SceneIds nextScene;
+	SceneIds currScene;
 	std::queue<ZombieType> GenListL;
 	std::queue<ZombieType> GenListR;
 

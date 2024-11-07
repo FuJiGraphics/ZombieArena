@@ -10,7 +10,7 @@ protected:
 	std::vector<Scene*> scenes;
 
 	Scene* currentSceneRaw = nullptr;
-	SceneIds startScene = SceneIds::SceneWave4;
+	SceneIds startScene = SceneIds::SceneWave1;
 	SceneIds currentScene;
 
 	SceneIds nextScene = SceneIds::SceneWave1;
@@ -31,7 +31,7 @@ public:
 	// Scene* GetCurrentScene() { return scenes[(int)currentScene]; }
 	Scene* GetCurrentScene() { return currentSceneRaw; }
 	SceneIds GetCurrentSceneId() const { return currentScene; }
-	void ChangeScene(SceneIds id);
+	void ChangeScene(SceneIds id, SceneIds currId);
 
 	void Update(float dt);
 	void LateUpdate(float dt);

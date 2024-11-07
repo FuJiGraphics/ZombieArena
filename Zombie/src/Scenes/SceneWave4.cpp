@@ -4,6 +4,7 @@
 SceneWave4::SceneWave4()
 	: SceneTemplate(SceneIds::SceneWave4)
 {
+	currScene = SceneIds::SceneWave4;
 }
 
 void SceneWave4::Init()
@@ -22,7 +23,6 @@ void SceneWave4::Init()
 	elapL = 0.0f;
 	ZombieGenDelayL = 0.2f;
 	ZombieGenDelayR = 0.2f;
-	nextScene = SceneIds::SceneWave1;
 
 	// Zen Zombies
 	for (int i = 0; i < 100; ++i)

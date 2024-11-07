@@ -177,12 +177,12 @@ void SceneTemplate::Update(float dt)
 	Scene::Update(dt);
 	if (InputMgr::GetKeyDown(sf::Keyboard::Num9))
 	{
-		SCENE_MGR.ChangeScene(SceneIds::SceneWave1);
+		//SCENE_MGR.ChangeScene(SceneIds::SceneWave1);
 		return;
 	}
 	if (InputMgr::GetKeyDown(sf::Keyboard::Num0))
 	{
-		SCENE_MGR.ChangeScene(SceneIds::SceneWave2);
+		//SCENE_MGR.ChangeScene(SceneIds::SceneWave2);
 		return;
 	}
 
@@ -244,14 +244,14 @@ void SceneTemplate::Update(float dt)
 	{
 		FRAMEWORK.SetTimeScale(0.0f);
 		SceneTemplate::Release();
-		SCENE_MGR.ChangeScene(SceneIds::SceneWave1);
+		SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, SceneIds::SceneWave4);
 		return;
 	}
 
 	if (GenListL.empty() && GenListR.empty() && CurrZombieCount <= 0)
 	{
 		SceneTemplate::Release();
-		SCENE_MGR.ChangeScene(nextScene);
+		SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, currScene);
 		return;
 	}
 
@@ -347,7 +347,16 @@ void SceneTemplate::OnCollide()
 			{
 				if (item->GetBoundBox().intersects(player->GetBoundBox()))
 				{
-					item->OnCollide(*player);
+					ItemType type = item->GetType();
+					switch (type)
+					{
+					case ItemType::Ammo:
+						((Ammo*)item)->OnCollide(*player);
+						break;
+					case ItemType::HealingPotion:
+						((HealingPotion*)item)->OnCollide(*player);
+						break;
+					}
 					break;
 				}
 			}

@@ -2,23 +2,15 @@
 #include "SceneMgr.h"
 #include "SceneDev1.h"
 #include "SceneDev2.h"
+#include "Scenes/SceneUpgrade.h"
 
 void SceneMgr::Init()
 {
-	// scenes.push_back(new SceneDev1());	
-	// scenes.push_back(new SceneDev2());
-	// scenes.push_back(new SceneWave1());
-	// scenes.push_back(new SceneWave2());
-	// scenes.push_back(new SceneWave2());
-	// scenes.push_back(new SceneWave3());
-	// scenes.push_back(new SceneWave4());
-	// scenes.push_back(new SceneWave5());
-	currentSceneRaw = new SceneWave4;
+	currentSceneRaw = new SceneWave1;
 	currentSceneRaw->Enter();
 	currentSceneRaw->Init();
 
 	currentScene = startScene;
-	// scenes[(int)currentScene]->Enter();
 }
 
 void SceneMgr::Release()
@@ -35,7 +27,7 @@ void SceneMgr::Release()
 	scenes.clear();
 }
 
-void SceneMgr::ChangeScene(SceneIds id)
+void SceneMgr::ChangeScene(SceneIds id, SceneIds currId)
 {
 	nextScene = id;
 
@@ -43,10 +35,14 @@ void SceneMgr::ChangeScene(SceneIds id)
 		delete currentSceneRaw;
 	switch (id)
 	{
-	case SceneIds::SceneWave1: currentSceneRaw = new SceneWave1(); break;
-	case SceneIds::SceneWave2: currentSceneRaw = new SceneWave2(); break;
-	case SceneIds::SceneWave3: currentSceneRaw = new SceneWave3(); break;
-	case SceneIds::SceneWave4: currentSceneRaw = new SceneWave4(); break;
+	case SceneIds::SceneUpgrade: 
+		currentSceneRaw = new SceneUpgrade(SceneIds::SceneUpgrade); 
+		((SceneUpgrade*)currentSceneRaw)->SetCurrentScene(currId);
+		break;
+		case SceneIds::SceneWave1: currentSceneRaw = new SceneWave1(); break;
+		case SceneIds::SceneWave2: currentSceneRaw = new SceneWave2(); break;
+		case SceneIds::SceneWave3: currentSceneRaw = new SceneWave3(); break;
+		case SceneIds::SceneWave4: currentSceneRaw = new SceneWave4(); break;
 	}
 
 	currentSceneRaw->Enter();

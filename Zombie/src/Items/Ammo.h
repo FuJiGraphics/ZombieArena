@@ -4,7 +4,7 @@
 class Ammo : public Item
 {
 public:
-	Ammo() = default;
+	Ammo(ItemType type = ItemType::Ammo);
 	virtual ~Ammo() = default;
 
 	void OnCollide(Player& player) override;

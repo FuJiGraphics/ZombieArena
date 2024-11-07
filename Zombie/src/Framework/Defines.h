@@ -13,6 +13,7 @@ enum class SceneIds
 	None = -1,
 	Dev1,
 	Dev2,
+	SceneUpgrade,
 	SceneWave1,
 	SceneWave2,
 	SceneWave3,

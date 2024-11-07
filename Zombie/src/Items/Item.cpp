@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "Item.h"
 
+Item::Item(ItemType type)
+	: type(type)
+{
+}
+
 void Item::SetSortingLayer(SortingLayers layer, int order)
 {
 	this->sortingLayer = layer;
@@ -55,7 +60,11 @@ void Item::Reset()
 void Item::Update(float dt)
 {
 	if (!IsActive())
+	{
+		auto* scene = (SceneWave1*)SCENE_MGR.GetCurrentScene();
+		scene->itemPool.Return(this);
 		return;
+	}
 
 	elap += dt;
 	if (elap >= duration)
@@ -132,18 +141,19 @@ sf::FloatRect Item::GetBoundBox() const
 	return { pos.x, pos.y, size.x, size.y };
 }
 
+ItemType Item::GetType() const
+{
+	return type;
+}
+
 void Item::OnCollide(Player& player)
 {
 	active = false;
-	auto* scene = (SceneWave1*)SCENE_MGR.GetCurrentScene();
-	scene->itemPool.Return(this);
-	scene->EnableCollideItemList.remove(this);
+	this->SetEnableCollide(false);
 }
 
 void Item::OnCollide(Zombie& player)
 {
 	active = false;
-	auto* scene = (SceneWave1*)SCENE_MGR.GetCurrentScene();
-	scene->itemPool.Return(this);
-	scene->EnableCollideItemList.remove(this);
+	this->SetEnableCollide(false);
 }

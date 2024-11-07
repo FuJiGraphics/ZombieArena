@@ -1,6 +1,13 @@
 #pragma once
 #include "GameObject.h"
 
+enum class ItemType
+{
+	HealingPotion,
+	Ammo,
+};
+
+
 class Item : public GameObject
 {
 protected:
@@ -8,7 +15,7 @@ protected:
 	Item& operator=(const Item&) = delete;
 
 public:
-	Item() = default;
+	Item(ItemType type);
 	virtual ~Item() = default;
 
 	void SetSortingLayer(SortingLayers layer, int order);
@@ -34,6 +41,7 @@ public:
 
 	bool EnabledCollide() const;
 	sf::FloatRect GetBoundBox() const;
+	ItemType GetType() const;
 
 	// 상호작용 설정
 	virtual void OnCollide(Player& player);
@@ -47,5 +55,6 @@ private:
 	sf::RectangleShape boundBox;
 	bool isCollide = false;
 	bool enabledCollide = false;
+	ItemType type;
 };
 

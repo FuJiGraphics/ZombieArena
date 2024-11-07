@@ -12,14 +12,9 @@ public:
 	std::list<T*> used;
 
 public:
-	ObjectPool(int initSize = 10)
+	ObjectPool(int initSize = 0)
 	{
-		for (int i = 0; i < initSize; ++i)
-		{
-			auto obj = new T();
-			obj->Init();
-			unused.push_back(obj);
-		}
+
 	}
 
 	~ObjectPool()

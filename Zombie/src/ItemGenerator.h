@@ -3,12 +3,6 @@
 #include "GameObject.h"
 #include "Items/Item.h"
 
-enum class ItemType
-{
-	HealingPotion,
-	Ammo,
-};
-
 class HealingPotion;
 class Ammo;
 
