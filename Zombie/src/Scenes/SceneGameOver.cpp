@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "SceneUpgrade.h"
+#include "SceneGameOver.h"
 
-SceneUpgrade::SceneUpgrade()
-	: Scene(SceneIds::SceneUpgrade)
+SceneGameOver::SceneGameOver()
+	: Scene(SceneIds::SceneGameOver)
 {
 }
 
-void SceneUpgrade::Init()
+void SceneGameOver::Init()
 {
-	Scene::Init(); 
+	Scene::Init();
 	background.setTexture(TEXTURE_MGR.Get("graphics/background.png"));
 	background.setPosition(0.0f, 0.0f);
 	Utils::SetOrigin(background, Origins::MC);
@@ -16,19 +16,15 @@ void SceneUpgrade::Init()
 	worldView.setCenter({ 0.0f, 0.0f });
 	worldView.setSize({ (float)size.x, (float)size.y });
 
-	float tx = (float)size.x * -0.2f;
-	float ty = -0.3f;
+	float tx = (float)size.x * -0.1f;
+	float ty = -0.1f;
 	// 메뉴 리스트
 	const char* items[] = {
-		"Increased Attack Power",
-		"Increased Attack Speed",
-		"Increased Run Speed",
-		"Increased Max Health",
-		"Increased Ammo 5000",
+		"Game Over!!",
 	};
 
 	// 메뉴 설정
-	int menuSize = 5;
+	int menuSize = 1;
 	menuItems.resize(menuSize);
 	for (int i = 0; i < menuSize; ++i)
 	{
@@ -40,7 +36,7 @@ void SceneUpgrade::Init()
 	}
 
 	// 메뉴 충돌 범위
-	ty = -0.3f;
+	ty = -0.1f;
 	menuBounds.resize(menuSize);
 	for (int i = 0; i < menuSize; ++i)
 	{
@@ -52,16 +48,16 @@ void SceneUpgrade::Init()
 	}
 }
 
-void SceneUpgrade::Release()
+void SceneGameOver::Release()
 {
 	Scene::Release();
 }
 
-void SceneUpgrade::Enter()
+void SceneGameOver::Enter()
 {
 	FONT_MGR.Load("fonts/DS-DIGI.ttf");
 	FONT_MGR.Load("fonts/zombiecontrol.ttf");
-	TEXTURE_MGR.Load("graphics/background.png"); 
+	TEXTURE_MGR.Load("graphics/background.png");
 	TEXTURE_MGR.Load("Graphics/background_sheet.png");
 	TEXTURE_MGR.Load("Graphics/player.png");
 	TEXTURE_MGR.Load("Graphics/bloater.png");
@@ -74,7 +70,7 @@ void SceneUpgrade::Enter()
 	Scene::Enter();
 }
 
-void SceneUpgrade::Exit()
+void SceneGameOver::Exit()
 {
 	FONT_MGR.Unload("fonts/DS-DIGI.ttf");
 	FONT_MGR.Unload("fonts/zombiecontrol.ttf");
@@ -91,7 +87,7 @@ void SceneUpgrade::Exit()
 	Scene::Exit();
 }
 
-void SceneUpgrade::Draw(sf::RenderWindow& window)
+void SceneGameOver::Draw(sf::RenderWindow& window)
 {
 	window.setView(worldView);
 	window.draw(background);
@@ -101,69 +97,13 @@ void SceneUpgrade::Draw(sf::RenderWindow& window)
 	}
 }
 
-void SceneUpgrade::Update(float dt)
+void SceneGameOver::Update(float dt)
 {
 	Scene::Update(dt);
-
-	auto& window = FRAMEWORK.GetWindow();
-	const auto& mousePos = InputMgr::GetMousePosition();
-	auto pixelPos = window.mapPixelToCoords(mousePos);
-	sf::FloatRect mouseRect = { pixelPos.x - 1.0f, pixelPos.y - 1.0f, 1.0f, 1.0f };
-	int click = -1;
 	if (InputMgr::GetMouseButtonDown(sf::Mouse::Button::Left))
 	{
-		int size = (int)menuBounds.size();
-		for (int i = 0; i < size; ++i)
-		{
-			if (menuBounds[i].intersects(mouseRect))
-			{
-				click = i;
-				break;
-			}
-		}
-	}
-
-	switch (click)
-	{
-		case 0:  //"Increased Attack Power",
-			SceneTemplate::playerData.atk += 10.f;
-			break;
-		case 1:	 //"Increased Attack Speed",
-			SceneTemplate::playerData.attackDelay -= 0.03f;
-			break;
-		case 2:	 //"Increased Run Speed",
-			SceneTemplate::playerData.moveSpeed += 5.f;
-			break;
-		case 3:	 //"Increased Max Health",
-			SceneTemplate::playerData.hp = 100.f;
-			break;
-		case 4:	 //"Increased Ammo 5000",
-			SceneTemplate::playerData.ammoCount += 5000;
-			break;
-	}
-
-	if (click >= 0)
-	{
-		SCENE_MGR.ChangeScene(nextScene, SceneIds::SceneUpgrade);
+		SCENE_MGR.ChangeScene(nextScene, SceneIds::SceneGameOver);
 		return;
 	}
 }
 
-void SceneUpgrade::SetCurrentScene(SceneIds id)
-{
-	switch (id)
-	{
-	case SceneIds::SceneWave1: 
-		nextScene = SceneIds::SceneWave2;
-		break;
-	case SceneIds::SceneWave2:
-		nextScene = SceneIds::SceneWave3;
-		break;
-	case SceneIds::SceneWave3:
-		nextScene = SceneIds::SceneWave4;
-		break;
-	case SceneIds::SceneWave4:
-		nextScene = SceneIds::SceneWave1;
-		break;
-	}
-}

@@ -45,6 +45,9 @@ void Framework::Do()
         InputMgr::Update(deltaTime);
         
         SCENE_MGR.Update(deltaTime);
+        if (SCENE_MGR.isExitGame)
+            break;
+
         SCENE_MGR.LateUpdate(deltaTime);
 
         window.clear();

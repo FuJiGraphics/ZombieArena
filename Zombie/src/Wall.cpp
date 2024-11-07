@@ -51,6 +51,17 @@ bool Wall::Intersect(Player& obj)
 	return result;
 }
 
+bool Wall::Intersect(Zombie& obj)
+{
+	bool result = false;
+	if (body.getGlobalBounds().intersects(obj.GetBoundBox()))
+	{
+		obj.IsCollide(*this);
+		result = true;
+	}
+	return result;
+}
+
 void Wall::SetSize(float width, float height)
 {
 	size = { width, height };

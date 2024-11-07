@@ -11,12 +11,12 @@ void SceneWave1::Init()
 {
 	currWave = 1;
 
-	// Player
-	playerData.attackDelay = 0.8f;
+	// Player Start Stat
+	playerData.SetWeapon();
 
 	// Item
 	elapItem = 0.0f;
-	ItemZenDelay = 15.0f;
+	ItemZenDelay = 5.0f;
 
 	// Zombies
 	elapR = 0.0f;
@@ -24,11 +24,11 @@ void SceneWave1::Init()
 	ZombieGenDelayL = 1.0f;
 	ZombieGenDelayR = 1.0f;
 
-	// Zen Zombies
-	GenListL.push(ZombieType::crawler);
-	GenListL.push(ZombieType::crawler);
-	GenListR.push(ZombieType::crawler);
-	GenListR.push(ZombieType::crawler);
+	// Gen Zombies
+	for (int i = 0; i < 10; ++i)
+		GenListL.push(ZombieType::crawler);
+	for (int j = 0; j < 10; ++j)
+		GenListR.push(ZombieType::crawler);
 
 	SceneTemplate::Init();
 }

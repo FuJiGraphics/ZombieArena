@@ -10,10 +10,8 @@ protected:
 	std::vector<Scene*> scenes;
 
 	Scene* currentSceneRaw = nullptr;
-	SceneIds startScene = SceneIds::SceneWave1;
+	SceneIds startScene = SceneIds::SceneGameIntro;
 	SceneIds currentScene;
-
-	SceneIds nextScene = SceneIds::SceneWave1;
 
 	SceneMgr() = default;
 	virtual ~SceneMgr() = default;
@@ -37,6 +35,9 @@ public:
 	void LateUpdate(float dt);
 
 	void Draw(sf::RenderWindow& window);
+
+public:
+	bool isExitGame = false;
 
 private:
 	float currDt;

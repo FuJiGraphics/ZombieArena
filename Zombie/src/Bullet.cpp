@@ -117,6 +117,16 @@ void Bullet::SetBoundBox(float x, float y, float width, float height)
 	boundBox.setSize({ width, height });
 }
 
+void Bullet::SetKnockbackDuration(float duration)
+{
+	KnockbackDuration = duration;
+}
+
+void Bullet::SetWeaponType(WeaponType type)
+{
+	weaponType = type;
+}
+
 sf::FloatRect Bullet::GetBoundBox() const
 {
 	const sf::Vector2f& pos = boundBox.getPosition();
@@ -130,8 +140,23 @@ void Bullet::OnCollide(Zombie* zombie)
 {
 	if (zombie)
 	{
+		if (weaponType == WeaponType::Minigun)
+			zombie->SetKnockBack(true, KnockbackDuration);
+		else if (weaponType == WeaponType::Shotgun)
+			zombie->AddKnockBackDuration(KnockbackDuration);
 		zombie->OnDamage(atk);
 		isDie = true;
 		active = false;
+
+		auto* scene = (SceneTemplate*)SCENE_MGR.GetCurrentScene();
+		auto& size = boundBox.getSize();
+		Effect* effect = scene->AddGo(scene->effectPool.Take());
+		effect->SetAnimationMode(true);
+		auto& blood = effect->GetAnimation();
+		blood.SetTexture(TEXTURE_MGR.Get("graphics/bloodEffect.png"));
+		blood.SetAnimSequence({ 0, 0, 100, 100 }, 0, 0.02, 6);
+		blood.AddAnimSequence({ 0, 100, 100, 100 }, 0, 0.02, 6);
+		blood.AddAnimSequence({ 0, 200, 100, 100 }, 0, 0.02, 6);
+		blood.SetPosition({ position.x - 48.f, position.y - 48.f });
 	}
 }

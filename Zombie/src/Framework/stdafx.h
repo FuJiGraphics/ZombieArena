@@ -25,9 +25,15 @@
 #include "TileMap.h"
 #include "Camera.h"
 #include "TextUI.hpp"
+#include "Anim.h"
 
+// Scenes
+#include "Scenes/SceneGameInfo.h"
+#include "Scenes/SceneGameIntro.h"
+#include "Scenes/SceneGameOver.h"
 #include "Scenes/SceneTemplate.h"
 #include "Scenes/SceneUpgrade.h"
+#include "Scenes/SceneSelect.h"
 #include "Scenes/SceneWave1.h"
 #include "Scenes/SceneWave2.h"
 #include "SceneS/SceneWave3.h"

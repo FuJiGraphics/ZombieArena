@@ -49,10 +49,14 @@ public:
 	void SetEffectPool(ObjectPool<Effect>* myPool);
 	void SetBoundBox(float x, float y, float width, float height);
 	void SetZombieType(ZombieType type);
+	void SetKnockBack(bool enabled, float duration);
+	void SetOverlapZombie(bool enabled);
+	void AddKnockBackDuration(float duration);
 
 	sf::FloatRect GetBoundBox() const;
 	bool IsCollide(Bullet& bullet);
 	bool IsCollide(Wall& wall);
+	bool IsCollide(Zombie& zombie);
 	bool IsCollide(Player& player);
 	void OnDamage(int damage);
 	bool IsDie() const { return isDie; }
@@ -72,6 +76,16 @@ protected:
 	float attackElap = 0.0f;
 	bool isDie = false;
 	bool isCollidePlayer = false;
+
+	// ³Ë¹é
+	bool isKnockBack = false;
+	float KnockBackDuration = 0.0f;
+	float KnockBackElap = 0.0;
+
+	// Á»ºñ °ãÄ§
+	bool isOverlapZombie = false;
+	sf::Vector2f overlapZombieDir;
+	sf::Vector2f currDir;
 
 	sf::View* view;
 	Player* player;

@@ -69,14 +69,54 @@ void Zombie::Update(float dt)
 	if (player != nullptr)
 	{
 		sf::Vector2f dir = (player->GetPosition() - position);
-		Utils::Normalize(dir);
-		float angle = Utils::Angle(dir);
-		body.setRotation(angle);
-		prevPos = position;
-		sf::Vector2f nextPos = position + (dir * speed * dt);
-		float length = Utils::Distance(nextPos, player->GetPosition());
-		if(length >= boundBox.getSize().x * 0.8f)
-			this->SetPosition(position + (dir * speed * dt));
+		if (isOverlapZombie)
+		{ 
+			sf::Vector2f backDir = Utils::GetRotateVector(90.f, overlapZombieDir);
+			Utils::Normalize(backDir);
+			float angle = Utils::Angle(backDir);
+			body.setRotation(angle);
+			currDir = backDir;
+			prevPos = position;
+		}
+		else
+		{
+			Utils::Normalize(dir);
+			float angle = Utils::Angle(dir);
+			body.setRotation(angle);
+			currDir = dir;
+			prevPos = position;
+		}
+
+		KnockBackElap += dt;
+		if (isKnockBack && KnockBackElap <= KnockBackDuration)
+		{
+			sf::Vector2f nextPos = position - (dir * (speed * 10.0f) * dt);
+			float length = Utils::Distance(nextPos, player->GetPosition());
+			if (length >= boundBox.getSize().x * 0.8f)
+			{
+				this->SetPosition(nextPos);
+				currDir = dir;
+			}
+		}
+		else if (isKnockBack && KnockBackElap > KnockBackDuration)
+		{
+			isKnockBack = false;
+		}
+		else if (isOverlapZombie)
+		{
+			sf::Vector2f nextPos = position + (currDir * (speed * 2.f) * dt);
+			this->SetPosition(nextPos);
+		}
+		else
+		{
+			sf::Vector2f nextPos = position + (dir * speed * dt);
+			float length = Utils::Distance(nextPos, player->GetPosition());
+			if (length >= boundBox.getSize().x * 0.8f)
+			{
+				this->SetPosition(nextPos);
+				currDir = dir;
+			}
+		}
 	}
 	attackElap += dt;
 	if (isCollidePlayer)
@@ -92,6 +132,7 @@ void Zombie::Update(float dt)
 
 	hp.SetPosition({ position.x, position.y + 20.f });
 	boundBox.setPosition(position);
+
 }
 
 void Zombie::Draw(sf::RenderWindow& window)
@@ -102,7 +143,7 @@ void Zombie::Draw(sf::RenderWindow& window)
 	window.draw(body);
 	hp.Draw(window);
 
-	const auto* scene = (const SceneWave1*)SCENE_MGR.GetCurrentScene();
+	const auto* scene = (const SceneTemplate*)SCENE_MGR.GetCurrentScene();
 	if (scene->IsOnDebugBox())
 		window.draw(boundBox);
 }
@@ -156,7 +197,7 @@ void Zombie::SetZombieType(ZombieType type)
 		TEXTURE_MGR.Load("Graphics/crawler.png");
 		body.setTexture(TEXTURE_MGR.Get("Graphics/crawler.png"));
 		this->SetAttack(20.f);
-		this->SetSpeed(30.f);
+		this->SetSpeed(50.f);
 		this->SetAttackSpeed(1.0f);
 		hp.SetMaxHp(100);
 		hp.SetSize(50.f, 5.f);
@@ -169,7 +210,7 @@ void Zombie::SetZombieType(ZombieType type)
 		this->SetAttack(15.f);
 		this->SetSpeed(97.f);
 		this->SetAttackSpeed(1.0f);
-		hp.SetMaxHp(200);
+		hp.SetMaxHp(300);
 		hp.SetSize(50.f, 5.f);
 		hp.SetOrigin(Origins::MC);
 		this->ResetBoundBox();
@@ -178,9 +219,9 @@ void Zombie::SetZombieType(ZombieType type)
 		TEXTURE_MGR.Load("Graphics/bloater.png");
 		body.setTexture(TEXTURE_MGR.Get("Graphics/bloater.png"));
 		this->SetAttack(70.f);
-		this->SetSpeed(85.f);
+		this->SetSpeed(89.f);
 		this->SetAttackSpeed(1.5f);
-		hp.SetMaxHp(1000);
+		hp.SetMaxHp(5000);
 		hp.SetSize(50.f, 5.f);
 		hp.SetOrigin(Origins::MC);
 		this->ResetBoundBox();
@@ -210,6 +251,18 @@ bool Zombie::IsCollide(Wall& wall)
 {
 	this->SetPosition(prevPos);
 	return true;
+}
+
+bool Zombie::IsCollide(Zombie& zombie)
+{
+	bool result = false;
+	if (this->GetBoundBox().intersects(zombie.GetBoundBox()))
+	{
+		zombie.isOverlapZombie = true;
+		zombie.overlapZombieDir = currDir;
+		result = true;
+	}
+	return result;
 }
 
 bool Zombie::IsCollide(Player& player)
@@ -247,6 +300,25 @@ void Zombie::OnDamage(int damage)
 			effect->SetPosition(position);
 		}
 	}
+}
+
+void Zombie::SetKnockBack(bool enabled, float duration)
+{
+	isKnockBack = enabled;
+	KnockBackDuration = duration;
+	KnockBackElap = 0.0f;
+}
+
+void Zombie::SetOverlapZombie(bool enabled)
+{
+	isOverlapZombie = enabled;
+}
+
+void Zombie::AddKnockBackDuration(float duration)
+{
+	isKnockBack = true;
+	KnockBackDuration += duration;
+	KnockBackElap = 0.0f;
 }
 
 void Zombie::ResetBoundBox()

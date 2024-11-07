@@ -16,6 +16,7 @@ public:
 	void setBlockArea(float x, float y, float width, float height);
 
 private:
+	bool ActivateBlockArea = false;
 	sf::Vector2f m_PrevPos;
 	sf::FloatRect m_BlockArea;
 };

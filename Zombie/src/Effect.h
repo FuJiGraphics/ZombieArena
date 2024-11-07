@@ -26,14 +26,18 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 public:
+	void SetAnimationMode(bool enabled);
 	void SetDuration(float duration);
 	void SetTexture(const std::string& path);
 	void SetObjectPool(ObjectPool<Effect>& myPool);
 
+	fz::Anim& GetAnimation();
 private:
 	sf::Sprite body;
 	float duration = 0.0f;
 	float elap = 0.0f;
 	ObjectPool<Effect>* myPool = nullptr;
+	bool isAnimation = false;
+	fz::Anim anim;
 };
 

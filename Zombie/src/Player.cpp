@@ -98,22 +98,60 @@ void Player::Update(float dt)
 	body.setRotation(mouseAngle);
 
 	delayElap += dt;
-	if (scene && InputMgr::GetMouseButton(sf::Mouse::Left))
+	bool isClick = false;
+	if (weaponType == WeaponType::Minigun)
+		isClick = InputMgr::GetMouseButton(sf::Mouse::Left);
+	else if (weaponType == WeaponType::Shotgun)
+		isClick = InputMgr::GetMouseButtonDown(sf::Mouse::Left);
+
+	if (scene && isClick)
 	{
 		if (ammo > 0 && delayElap >= delay)
 		{
 			delayElap = 0.0f;
-			ammo -= 1;
-			const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 15.0f, newDir);
-			Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
-			bullet->Init();
-			bullet->SetPosition(position);
-			bullet->SetDuration(3.0f);
-			bullet->SetSpeed(600.f);
-			bullet->SetDirection(dir);
-			bullet->SetPool(&scene->bulletPool);
+			if (weaponType == WeaponType::Minigun)
+			{
+				ammo -= 1;
+				const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 15.0f, newDir);
+				Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
+				bullet->Init();
+				bullet->SetWeaponType(WeaponType::Minigun);
+				bullet->SetAttack(atkPower);
+				bullet->SetPosition(position);
+				bullet->SetKnockbackDuration(0.01f);
+				bullet->SetDuration(3.0f);
+				bullet->SetSpeed(600.f);
+				bullet->SetDirection(dir);
+				bullet->SetPool(&scene->bulletPool);
+			}
+			else if (weaponType == WeaponType::Shotgun)
+			{
+				for (int i = 1; i <= 30; ++i)
+				{
+					ammo--;
+					const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 45.0f, newDir);
+					Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
+					bullet->Init();
+					bullet->SetWeaponType(WeaponType::Shotgun);
+					bullet->SetAttack(atkPower);
+					bullet->SetPosition(position);
+					bullet->SetKnockbackDuration(0.01f);
+					bullet->SetDuration(0.3f);
+					bullet->SetSpeed(900.f);
+					bullet->SetDirection(dir);
+					bullet->SetPool(&scene->bulletPool);
+					dt += 1.0f;
+					if (ammo <= 0)
+					{
+						ammo = 0;
+						break;
+					}
+				}
+			}
 		}
 	}
+
+	
 	if (view)
 	{
 		view->setCenter(position);
@@ -132,6 +170,11 @@ void Player::Draw(sf::RenderWindow& window)
 	hp.Draw(window);
 }
 
+void Player::SetWeapon(WeaponType type)
+{
+	weaponType = type;
+}
+
 void Player::SetScene(SceneTemplate* scene)
 {
 	this->scene = scene;
@@ -145,6 +188,7 @@ void Player::SetHP(float hp)
 void Player::SetDelay(float delayTime)
 {
 	this->delay = delayTime;
+	delayElap = delayTime;
 }
 
 void Player::SetSpeed(float speed)
@@ -168,6 +212,11 @@ void Player::SetBoundBox(float x, float y, float width, float height)
 void Player::SetDebugColor(sf::Color color)
 {
 	boundBox.setOutlineColor(color);
+}
+
+void Player::SetAttack(float atk)
+{
+	this->atkPower = atk;
 }
 
 void Player::SetAmmo(unsigned int ammo)

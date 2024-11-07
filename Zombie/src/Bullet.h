@@ -33,6 +33,8 @@ public:
 	void SetAttack(float atk);
 	void SetPool(ObjectPool<Bullet>* myPool);
 	void SetBoundBox(float x, float y, float width, float height);
+	void SetKnockbackDuration(float duration);
+	void SetWeaponType(WeaponType type);
 
 	sf::FloatRect GetBoundBox() const;
 	void OnCollide(Zombie* zombie);
@@ -44,9 +46,11 @@ private:
 	float speed;
 	float duration = 7.f;
 	float elap = 0.0f;
-	float atk = 15.f;
+	float atk = 5.f;
+	float KnockbackDuration = 0.0f;
 	bool isDie = false;
 	ObjectPool<Bullet>* myPool = nullptr;
 
+	WeaponType weaponType;
 	sf::RectangleShape boundBox;
 };

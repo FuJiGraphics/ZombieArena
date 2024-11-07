@@ -2,6 +2,7 @@
 
 #include "Framework/GameObject.h"
 #include "Player.h"
+#include "Zombie.h"
 
 class Wall : public GameObject
 {
@@ -23,6 +24,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 	bool Intersect(Player& obj);
+	bool Intersect(Zombie& obj);
 
 public:
 	void SetSize(float width, float height);

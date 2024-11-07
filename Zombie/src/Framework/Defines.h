@@ -11,14 +11,17 @@ enum class SortingLayers
 enum class SceneIds
 {
 	None = -1,
-	Dev1,
-	Dev2,
+	SceneGameInfo,
+	SceneGameIntro,
+	SceneGameOver,
 	SceneUpgrade,
+	SceneSelect,
 	SceneWave1,
 	SceneWave2,
 	SceneWave3,
 	SceneWave4,
 	SceneWave5,
+	ExitGame,
 	Count,
 };
 

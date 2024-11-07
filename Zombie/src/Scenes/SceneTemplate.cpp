@@ -43,10 +43,12 @@ void SceneTemplate::Init()
 	player->SetPosition({ 0.0f, 0.0f });
 	player->SetCamera(worldView);
 	player->SetScene(this);
+	player->SetWeapon(playerData.weaponType);
 	player->SetHP(playerData.hp);
 	player->SetDelay(playerData.attackDelay);
 	player->SetSpeed(playerData.moveSpeed);
 	player->SetAmmo(playerData.ammoCount);
+	player->SetAttack(playerData.atk);
 	player->Init();
 
 	// 타일맵 크기
@@ -125,6 +127,7 @@ void SceneTemplate::Enter()
 {
 	FONT_MGR.Load("fonts/DS-DIGI.ttf");
 	FONT_MGR.Load("fonts/zombiecontrol.ttf");
+	TEXTURE_MGR.Load("graphics/bloodEffect.png");
 	TEXTURE_MGR.Load("Graphics/background_sheet.png");
 	TEXTURE_MGR.Load("Graphics/player.png");
 	TEXTURE_MGR.Load("Graphics/bloater.png");
@@ -143,6 +146,7 @@ void SceneTemplate::Exit()
 
 	FONT_MGR.Unload("fonts/DS-DIGI.ttf");
 	FONT_MGR.Unload("fonts/zombiecontrol.ttf");
+	TEXTURE_MGR.Unload("graphics/bloodEffect.png");
 	TEXTURE_MGR.Unload("Graphics/background_sheet.png");
 	TEXTURE_MGR.Unload("Graphics/player.png");
 	TEXTURE_MGR.Unload("Graphics/bloater.png");
@@ -175,16 +179,6 @@ void SceneTemplate::Update(float dt)
 	this->DeleteItems();
 
 	Scene::Update(dt);
-	if (InputMgr::GetKeyDown(sf::Keyboard::Num9))
-	{
-		//SCENE_MGR.ChangeScene(SceneIds::SceneWave1);
-		return;
-	}
-	if (InputMgr::GetKeyDown(sf::Keyboard::Num0))
-	{
-		//SCENE_MGR.ChangeScene(SceneIds::SceneWave2);
-		return;
-	}
 
 	elapL += dt;
 	if (!GenListL.empty() && elapL >= ZombieGenDelayL)
@@ -240,21 +234,23 @@ void SceneTemplate::Update(float dt)
 	}
 	this->OnCollide();
 
-	if (player->IsDie())
-	{
-		FRAMEWORK.SetTimeScale(0.0f);
-		SceneTemplate::Release();
-		SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, SceneIds::SceneWave4);
-		return;
-	}
-
+	// 게임 결과
+	// Game Clear
 	if (GenListL.empty() && GenListR.empty() && CurrZombieCount <= 0)
 	{
 		SceneTemplate::Release();
 		SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, currScene);
 		return;
 	}
+	// Game Over
+	if (player->IsDie())
+	{
+		SceneTemplate::Release();
+		SCENE_MGR.ChangeScene(SceneIds::SceneGameOver, currScene);
+		return;
+	}
 
+	// UI 정보 갱신
 	uihub.SetAmmo(player->GetAmmo());
 	uihub.SetZombieCount(CurrZombieCount);
 	uihub.SetScore(score);
@@ -330,9 +326,42 @@ void SceneTemplate::OnCollide()
 		zombie->IsCollide(*player);
 	}
 
+	std::list<Zombie*> findList;
+	for (auto& zombie : zombiePool.used)
+		findList.push_back(zombie);
+	while (!findList.empty())
+	{
+		auto find = findList.front();
+		findList.pop_front();
+		bool findColResult = false;
+		for (auto& target : findList)
+		{
+			if (find->IsCollide(*target))
+			{
+				findColResult = true;
+			}
+		}
+		if (!findColResult)
+			find->SetOverlapZombie(false);
+	}
+
 	bool result = false;
 	for (auto& wall : walls)
 		result = (wall.Intersect(*player)) ? true : result;
+	if (result)
+		player->SetDebugColor(sf::Color::Red);
+	else
+		player->SetDebugColor(sf::Color::Green);
+	for (auto& wall : walls)
+	{
+		for (auto& zombie : zombiePool)
+		{
+			if (!zombie->IsActive() || zombie->IsDie())
+				continue;
+
+			result = (wall.Intersect(*zombie)) ? true : result;
+		}
+	}
 	if (result)
 		player->SetDebugColor(sf::Color::Red);
 	else
@@ -443,4 +472,3 @@ void SceneTemplate::DeleteItems()
 		del = nullptr;
 	}
 }
-

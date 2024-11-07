@@ -14,10 +14,40 @@ class Zombie;
 
 struct PlayerData
 {
+	float atk = 10.0f;
 	float hp = 100.0f;
 	float moveSpeed = 100.0f;
 	float attackDelay = 1.0f;
 	unsigned int ammoCount = 500;
+	WeaponType weaponType;
+
+	void SetWeapon(WeaponType weapon = WeaponType::None)
+	{
+		hp = 100.f;
+		if (weapon != WeaponType::None && weapon != WeaponType::Count)
+			weaponType = weapon;
+		switch (weaponType)
+		{
+			case WeaponType::Minigun:
+				moveSpeed = 100.f;
+				atk = 5.f;
+				attackDelay = 0.1f;
+				ammoCount = 500;
+				break;
+			case WeaponType::Shotgun:
+				moveSpeed = 90.f;
+				atk = 5.f;
+				attackDelay = 2.0f;
+				ammoCount = 500;
+				break;
+			case WeaponType::Rocket:
+				moveSpeed = 90.f;
+				atk = 50.f;
+				attackDelay = 1.5f;
+				ammoCount = 8;
+				break;
+		}
+	}
 };
 
 class SceneTemplate : public Scene

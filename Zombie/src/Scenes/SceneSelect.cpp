@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "SceneUpgrade.h"
+#include "SceneSelect.h"
 
-SceneUpgrade::SceneUpgrade()
-	: Scene(SceneIds::SceneUpgrade)
+SceneSelect::SceneSelect()
+	: Scene(SceneIds::SceneSelect)
 {
 }
 
-void SceneUpgrade::Init()
+void SceneSelect::Init()
 {
-	Scene::Init(); 
+	Scene::Init();
 	background.setTexture(TEXTURE_MGR.Get("graphics/background.png"));
 	background.setPosition(0.0f, 0.0f);
 	Utils::SetOrigin(background, Origins::MC);
@@ -17,18 +17,16 @@ void SceneUpgrade::Init()
 	worldView.setSize({ (float)size.x, (float)size.y });
 
 	float tx = (float)size.x * -0.2f;
-	float ty = -0.3f;
+	float ty = -0.1f;
 	// 메뉴 리스트
 	const char* items[] = {
-		"Increased Attack Power",
-		"Increased Attack Speed",
-		"Increased Run Speed",
-		"Increased Max Health",
-		"Increased Ammo 5000",
+		"Minigun",
+		"Shotgun",
+		"Rocket",
 	};
 
 	// 메뉴 설정
-	int menuSize = 5;
+	int menuSize = 3;
 	menuItems.resize(menuSize);
 	for (int i = 0; i < menuSize; ++i)
 	{
@@ -40,7 +38,7 @@ void SceneUpgrade::Init()
 	}
 
 	// 메뉴 충돌 범위
-	ty = -0.3f;
+	ty = -0.1f;
 	menuBounds.resize(menuSize);
 	for (int i = 0; i < menuSize; ++i)
 	{
@@ -52,16 +50,16 @@ void SceneUpgrade::Init()
 	}
 }
 
-void SceneUpgrade::Release()
+void SceneSelect::Release()
 {
 	Scene::Release();
 }
 
-void SceneUpgrade::Enter()
+void SceneSelect::Enter()
 {
 	FONT_MGR.Load("fonts/DS-DIGI.ttf");
 	FONT_MGR.Load("fonts/zombiecontrol.ttf");
-	TEXTURE_MGR.Load("graphics/background.png"); 
+	TEXTURE_MGR.Load("graphics/background.png");
 	TEXTURE_MGR.Load("Graphics/background_sheet.png");
 	TEXTURE_MGR.Load("Graphics/player.png");
 	TEXTURE_MGR.Load("Graphics/bloater.png");
@@ -74,7 +72,7 @@ void SceneUpgrade::Enter()
 	Scene::Enter();
 }
 
-void SceneUpgrade::Exit()
+void SceneSelect::Exit()
 {
 	FONT_MGR.Unload("fonts/DS-DIGI.ttf");
 	FONT_MGR.Unload("fonts/zombiecontrol.ttf");
@@ -91,7 +89,7 @@ void SceneUpgrade::Exit()
 	Scene::Exit();
 }
 
-void SceneUpgrade::Draw(sf::RenderWindow& window)
+void SceneSelect::Draw(sf::RenderWindow& window)
 {
 	window.setView(worldView);
 	window.draw(background);
@@ -101,7 +99,7 @@ void SceneUpgrade::Draw(sf::RenderWindow& window)
 	}
 }
 
-void SceneUpgrade::Update(float dt)
+void SceneSelect::Update(float dt)
 {
 	Scene::Update(dt);
 
@@ -125,45 +123,20 @@ void SceneUpgrade::Update(float dt)
 
 	switch (click)
 	{
-		case 0:  //"Increased Attack Power",
-			SceneTemplate::playerData.atk += 10.f;
+		case 0:	 //"Minigun",
+			SceneTemplate::playerData.weaponType = WeaponType::Minigun;
 			break;
-		case 1:	 //"Increased Attack Speed",
-			SceneTemplate::playerData.attackDelay -= 0.03f;
+		case 1:	 //"Shotgun",
+			SceneTemplate::playerData.weaponType = WeaponType::Shotgun;
 			break;
-		case 2:	 //"Increased Run Speed",
-			SceneTemplate::playerData.moveSpeed += 5.f;
-			break;
-		case 3:	 //"Increased Max Health",
-			SceneTemplate::playerData.hp = 100.f;
-			break;
-		case 4:	 //"Increased Ammo 5000",
-			SceneTemplate::playerData.ammoCount += 5000;
+		case 2: // "Rocket",
+			SceneTemplate::playerData.weaponType = WeaponType::Rocket;
 			break;
 	}
 
 	if (click >= 0)
 	{
-		SCENE_MGR.ChangeScene(nextScene, SceneIds::SceneUpgrade);
+		SCENE_MGR.ChangeScene(nextScene, SceneIds::SceneSelect);
 		return;
-	}
-}
-
-void SceneUpgrade::SetCurrentScene(SceneIds id)
-{
-	switch (id)
-	{
-	case SceneIds::SceneWave1: 
-		nextScene = SceneIds::SceneWave2;
-		break;
-	case SceneIds::SceneWave2:
-		nextScene = SceneIds::SceneWave3;
-		break;
-	case SceneIds::SceneWave3:
-		nextScene = SceneIds::SceneWave4;
-		break;
-	case SceneIds::SceneWave4:
-		nextScene = SceneIds::SceneWave1;
-		break;
 	}
 }

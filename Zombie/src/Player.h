@@ -5,6 +5,15 @@ class Bullet;
 class SceneWave1;
 class SceneTemplate;
 
+enum class WeaponType
+{
+	None,
+	Minigun,
+	Shotgun,
+	Rocket,
+	Count,
+};
+
 class Player : public GameObject
 {
 protected:
@@ -30,6 +39,7 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 public:
+	void SetWeapon(WeaponType type);
 	void SetScene(SceneTemplate* scene);
 	void SetHP(float hp);
 	void SetDelay(float delayTime);
@@ -37,6 +47,7 @@ public:
 	sf::FloatRect GetBoundBox() const;
 	void SetBoundBox(float x, float y, float width, float height);
 	void SetDebugColor(sf::Color color);
+	void SetAttack(float atk);
 	void SetAmmo(unsigned int ammo);
 
 	void AddHP(float hp);
@@ -51,6 +62,7 @@ protected:
 	sf::Vector2f prevPos;
 	std::string texId;
 	sf::Sprite body;
+	float atkPower;
 	float speed;
 	Camera* view;
 	HpBar hp;
@@ -62,5 +74,6 @@ protected:
 	sf::RectangleShape boundBox;
 	bool isCollide = false;
 	bool isDie = false;
+	WeaponType weaponType;
 };
 
