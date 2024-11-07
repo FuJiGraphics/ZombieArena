@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "HpBar.h"
 #include "Wall.h"
+#include "Effect.h"
 
 class Wall;
 
@@ -45,6 +46,7 @@ public:
 	void SetSpeed(float speed);
 	void SetAttackSpeed(float atkSpeed);
 	void SetPool(ObjectPool<Zombie>* myPool);
+	void SetEffectPool(ObjectPool<Effect>* myPool);
 	void SetBoundBox(float x, float y, float width, float height);
 	void SetZombieType(ZombieType type);
 
@@ -74,6 +76,7 @@ protected:
 	sf::View* view;
 	Player* player;
 	ObjectPool<Zombie>* myPool = nullptr;
+	ObjectPool<Effect>* effectPool = nullptr;
 	sf::RectangleShape boundBox;
 };
 

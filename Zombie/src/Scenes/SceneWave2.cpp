@@ -7,9 +7,10 @@ SceneWave2::SceneWave2()
 }
 
 void SceneWave2::Init()
-{	
+{
+	currWave = 2;
+
 	// Player
-	playerData.moveSpeed = 120.f;
 	playerData.attackDelay = 0.5f;
 
 	// Item
@@ -21,8 +22,6 @@ void SceneWave2::Init()
 	elapL = 0.0f;
 	ZombieGenDelayL = 1.0f;
 	ZombieGenDelayR = 1.0f;
-	GenZombieCount = 10;
-	CurrZombieCount = GenZombieCount;
 	nextScene = SceneIds::SceneWave3;
 
 	// Zen Zombies

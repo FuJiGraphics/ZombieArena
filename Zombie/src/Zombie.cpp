@@ -137,6 +137,11 @@ void Zombie::SetPool(ObjectPool<Zombie>* myPool)
 	this->myPool = myPool;
 }
 
+void Zombie::SetEffectPool(ObjectPool<Effect>* myPool)
+{
+	this->effectPool = myPool;
+}
+
 void Zombie::SetBoundBox(float x, float y, float width, float height)
 {
 	boundBox.setPosition(x, y);
@@ -161,8 +166,8 @@ void Zombie::SetZombieType(ZombieType type)
 	case ZombieType::chaser:
 		TEXTURE_MGR.Load("Graphics/chaser.png");
 		body.setTexture(TEXTURE_MGR.Get("Graphics/chaser.png"));
-		this->SetAttack(30.f);
-		this->SetSpeed(100.f);
+		this->SetAttack(15.f);
+		this->SetSpeed(97.f);
 		this->SetAttackSpeed(1.0f);
 		hp.SetMaxHp(200);
 		hp.SetSize(50.f, 5.f);
@@ -173,8 +178,8 @@ void Zombie::SetZombieType(ZombieType type)
 		TEXTURE_MGR.Load("Graphics/bloater.png");
 		body.setTexture(TEXTURE_MGR.Get("Graphics/bloater.png"));
 		this->SetAttack(70.f);
-		this->SetSpeed(65.f);
-		this->SetAttackSpeed(1.2f);
+		this->SetSpeed(85.f);
+		this->SetAttackSpeed(1.5f);
 		hp.SetMaxHp(1000);
 		hp.SetSize(50.f, 5.f);
 		hp.SetOrigin(Origins::MC);
@@ -228,9 +233,19 @@ void Zombie::OnDamage(int damage)
 		hp = 0.0f;
 		isDie = true;
 		this->SetActive(false);
-		if (myPool)
-			myPool->Return(this);
 		scene.CurrZombieCount -= 1;
+		scene.score += ((int)ZombieType::crawler * 100 + 100);
+		myPool->Return(this);
+		if (effectPool)
+		{
+			Effect* effect = scene.AddGo(effectPool->Take());
+			effect->SetSortingLayer(SortingLayers::Background, 0);
+			effect->SetTexture("graphics/blood.png");
+			effect->SetDuration(15.0f);
+			effect->SetObjectPool(*effectPool);
+			effect->SetOrigin(Origins::MC);
+			effect->SetPosition(position);
+		}
 	}
 }
 

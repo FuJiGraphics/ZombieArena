@@ -24,8 +24,10 @@
 #include "ObjectPool.h"
 #include "TileMap.h"
 #include "Camera.h"
+#include "TextUI.hpp"
 
 #include "Scenes/SceneTemplate.h"
 #include "Scenes/SceneWave1.h"
 #include "Scenes/SceneWave2.h"
 #include "SceneS/SceneWave3.h"
+#include "Scenes/SceneWave4.h"

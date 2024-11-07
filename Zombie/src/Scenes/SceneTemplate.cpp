@@ -3,6 +3,7 @@
 #include "Zombie.h"
 
 PlayerData SceneTemplate::playerData;
+int SceneTemplate::score = 0;
 
 SceneTemplate::SceneTemplate(SceneIds ids)
 	: Scene(ids)
@@ -13,7 +14,6 @@ SceneTemplate::SceneTemplate(SceneIds ids)
 void SceneTemplate::Init()
 {
 	isInit = true;
-	FONT_MGR.Load("fonts/DS-DIGI.ttf");
 	Scene::Init();
 
 	tilemap = AddGo(new TileMap("graphics/background_sheet.png"));
@@ -86,32 +86,50 @@ void SceneTemplate::Init()
 		tilemapPos.y - tilemapSize.y * 0.5f,
 		tilemapPos.x + tilemapSize.x * 0.5f,
 		tilemapPos.y + tilemapSize.y * 0.5f);
+
+	// UI 인터페이스 초기화
+	uihub.Init();
+	uihub.SetTargetCamera(&worldView);
+	uihub.SetZombieCount(CurrZombieCount);
+	uihub.SetWave(currWave);
+
+	// 좀비 정보
+	GenZombieCount = GenListL.size() + GenListR.size();
 }
 
 void SceneTemplate::Release()
 {
 	if (!isInit)
 		return;
-
-	RemoveGo(tilemap);
+	this->DeleteUsedBullets();
+	this->DeleteDieZombies();
+	gameObjects.remove(tilemap);
 	tilemap->Release();
-	RemoveGo(player);
+	gameObjects.remove(player);
 	delete tilemap;
 	delete player;
 	SceneTemplate::Exit();
 	ApplyRemoveGO();
+	CurrZombieCount = 0;
+	GenZombieCount = 0;
+	while (!GenListL.empty())
+		GenListL.pop();
+	while (!GenListR.empty())
+		GenListR.pop();
 	Scene::Release();
 }
 
 void SceneTemplate::Enter()
 {
 	FONT_MGR.Load("fonts/DS-DIGI.ttf");
+	FONT_MGR.Load("fonts/zombiecontrol.ttf");
 	TEXTURE_MGR.Load("Graphics/background_sheet.png");
 	TEXTURE_MGR.Load("Graphics/player.png");
 	TEXTURE_MGR.Load("Graphics/bloater.png");
 	TEXTURE_MGR.Load("Graphics/crawler.png");
 	TEXTURE_MGR.Load("Graphics/chaser.png");
 	TEXTURE_MGR.Load("Graphics/bullet.png");
+	TEXTURE_MGR.Load("Graphics/blood.png");
 }
 
 void SceneTemplate::Exit()
@@ -120,18 +138,14 @@ void SceneTemplate::Exit()
 		return;
 
 	FONT_MGR.Unload("fonts/DS-DIGI.ttf");
+	FONT_MGR.Unload("fonts/zombiecontrol.ttf");
 	TEXTURE_MGR.Unload("Graphics/background_sheet.png");
 	TEXTURE_MGR.Unload("Graphics/player.png");
 	TEXTURE_MGR.Unload("Graphics/bloater.png");
 	TEXTURE_MGR.Unload("Graphics/crawler.png");
 	TEXTURE_MGR.Unload("Graphics/chaser.png");
 	TEXTURE_MGR.Unload("Graphics/bullet.png");
-	for (auto zombie : zombies)
-	{
-		RemoveGo(zombie);
-		zombiePool.Return(zombie);
-	}
-	zombies.clear();
+	TEXTURE_MGR.Unload("Graphics/blood.png");
 	for (auto zombie : zombiePool.unused)
 		RemoveGo(zombie);
 	for (auto zombie : zombiePool.used)
@@ -148,6 +162,11 @@ void SceneTemplate::Update(float dt)
 	if (!isInit)
 		return;
 
+	// 비활성화된 오브젝트 정리
+	this->DeleteUsedBullets();
+	this->DeleteDieZombies();
+	this->DeleteEffects();
+
 	Scene::Update(dt);
 	if (InputMgr::GetKeyDown(sf::Keyboard::Num9))
 	{
@@ -161,31 +180,33 @@ void SceneTemplate::Update(float dt)
 	}
 
 	elapL += dt;
-	if (!GenListL.empty() && elapL >= ZombieGenDelayL && GenZombieCount)
+	if (!GenListL.empty() && elapL >= ZombieGenDelayL)
 	{
 		ZombieType typeL = GenListL.front();
-		GenZombieCount -= 1;
+		++CurrZombieCount;
 		elapL = 0.0f;
 		const auto& newPos = spawnLeft.Spawn();
 		Zombie* zombie = AddGo(zombiePool.Take());
 		zombie->SetPosition(newPos);
 		zombie->SetPlayer(player);
 		zombie->SetPool(&zombiePool);
+		zombie->SetEffectPool(&effectPool);
 		zombie->SetZombieType(typeL);
 		GenListL.pop();
 	}
 
 	elapR += dt;
-	if (!GenListR.empty() && elapR >= ZombieGenDelayR && GenZombieCount)
+	if (!GenListR.empty() && elapR >= ZombieGenDelayR)
 	{
 		ZombieType typeR = GenListR.front();
-		GenZombieCount -= 1;
+		++CurrZombieCount;
 		elapR = 0.0f;
 		const auto& newPos = spawnRight.Spawn();
 		Zombie* zombie = AddGo(zombiePool.Take());
 		zombie->SetPosition(newPos);
 		zombie->SetPlayer(player);
 		zombie->SetPool(&zombiePool);
+		zombie->SetEffectPool(&effectPool);
 		zombie->SetZombieType(typeR);
 		GenListR.pop();
 	}
@@ -214,16 +235,21 @@ void SceneTemplate::Update(float dt)
 	if (player->IsDie())
 	{
 		FRAMEWORK.SetTimeScale(0.0f);
+		SceneTemplate::Release();
 		SCENE_MGR.ChangeScene(SceneIds::SceneWave1);
 		return;
 	}
 
-	if (CurrZombieCount <= 0)
+	if (GenListL.empty() && GenListR.empty() && CurrZombieCount <= 0)
 	{
 		SceneTemplate::Release();
 		SCENE_MGR.ChangeScene(nextScene);
 		return;
 	}
+
+	uihub.SetZombieCount(CurrZombieCount);
+	uihub.SetScore(score);
+	uihub.Update(dt);
 }
 
 void SceneTemplate::Draw(sf::RenderWindow& window)
@@ -243,6 +269,8 @@ void SceneTemplate::Draw(sf::RenderWindow& window)
 	{
 		wall.Draw(window);
 	}
+	
+	uihub.Draw(window);
 }
 
 void SceneTemplate::SpawnZombies(int count)
@@ -288,6 +316,8 @@ void SceneTemplate::OnCollide()
 
 	for (auto& zombie : zombiePool)
 	{
+		if (!zombie->IsActive() || zombie->IsDie())
+			continue;
 		zombie->IsCollide(*player);
 	}
 
@@ -298,5 +328,65 @@ void SceneTemplate::OnCollide()
 		player->SetDebugColor(sf::Color::Red);
 	else
 		player->SetDebugColor(sf::Color::Green);
+}
+
+void SceneTemplate::DeleteUsedBullets()
+{
+	for (auto& bullet : bulletPool.used)
+	{
+		if (bullet->IsDie())
+		{
+			delBulletList.push_back(bullet);
+		}
+	}
+	while (!delBulletList.empty())
+	{
+		Bullet* del = delBulletList.front();
+		delBulletList.pop_front();
+		bulletPool.used.remove(del);
+		gameObjects.remove(del);
+		delete del;
+		del = nullptr;
+	}
+}
+
+void SceneTemplate::DeleteDieZombies()
+{
+	for (auto& zombie : zombiePool.unused)
+	{
+		if (zombie->IsDie())
+		{
+			delZombieList.push_back(zombie);
+		}
+	}
+	while (!delZombieList.empty())
+	{
+		Zombie* del = delZombieList.front();
+		delZombieList.pop_front();
+		zombiePool.unused.remove(del);
+		gameObjects.remove(del);
+		delete del;
+		del = nullptr;
+	}
+}
+
+void SceneTemplate::DeleteEffects()
+{
+	for (auto& effect : effectPool.unused)
+	{
+		if (!effect->IsActive())
+		{
+			delEffectList.push_back(effect);
+		}
+	}
+	while (!delEffectList.empty())
+	{
+		Effect* del = delEffectList.front();
+		delEffectList.pop_front();
+		effectPool.unused.remove(del);
+		gameObjects.remove(del);
+		delete del;
+		del = nullptr;
+	}
 }
 

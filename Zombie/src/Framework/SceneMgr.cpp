@@ -13,11 +13,11 @@ void SceneMgr::Init()
 	// scenes.push_back(new SceneWave3());
 	// scenes.push_back(new SceneWave4());
 	// scenes.push_back(new SceneWave5());
-	currentSceneRaw = new SceneWave1;
+	currentSceneRaw = new SceneWave4;
 	currentSceneRaw->Enter();
 	currentSceneRaw->Init();
 
-	// currentScene = startScene;
+	currentScene = startScene;
 	// scenes[(int)currentScene]->Enter();
 }
 
@@ -46,7 +46,7 @@ void SceneMgr::ChangeScene(SceneIds id)
 	case SceneIds::SceneWave1: currentSceneRaw = new SceneWave1(); break;
 	case SceneIds::SceneWave2: currentSceneRaw = new SceneWave2(); break;
 	case SceneIds::SceneWave3: currentSceneRaw = new SceneWave3(); break;
-		
+	case SceneIds::SceneWave4: currentSceneRaw = new SceneWave4(); break;
 	}
 
 	currentSceneRaw->Enter();

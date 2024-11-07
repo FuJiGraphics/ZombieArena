@@ -184,6 +184,5 @@ void Player::OnDamage(int damage)
 		hp = 0.0f;
 		isDie = true;
 		this->SetActive(false);
-		this->active = false;
 	}
 }

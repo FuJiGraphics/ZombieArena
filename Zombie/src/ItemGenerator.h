@@ -31,6 +31,5 @@ public:
 	Item* GenItem();
 
 protected:
-	ObjectPool<Item> itemPool;
 	SpawnArea area;
 };

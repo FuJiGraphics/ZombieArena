@@ -60,7 +60,7 @@ void Bullet::Reset()
 
 void Bullet::Update(float dt)
 {
-	if (!active)
+	if (!active || isDie)
 		return;
 
 	elap += dt;
@@ -73,12 +73,13 @@ void Bullet::Update(float dt)
 	{
 		elap = 0;
 		GameObject::active = false;
+		isDie = true;
 	}
 }
 
 void Bullet::Draw(sf::RenderWindow& window)
 {
-	if (!active)
+	if (!active || isDie)
 		return;
 
 	window.draw(body);
@@ -132,6 +133,5 @@ void Bullet::OnCollide(Zombie* zombie)
 		zombie->OnDamage(atk);
 		isDie = true;
 		active = false;
-		myPool->Return(this);
 	}
 }

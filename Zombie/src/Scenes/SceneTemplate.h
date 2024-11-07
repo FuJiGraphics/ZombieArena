@@ -6,14 +6,16 @@
 #include "SpawnArea.hpp"
 #include "Wall.h"
 #include "ItemGenerator.h"
+#include "UIHub.h"
+#include "Effect.h"
 
 class Zombie;
 
 struct PlayerData
 {
-	float hp;
-	float moveSpeed;
-	float attackDelay;
+	float hp = 100.0f;
+	float moveSpeed = 100.0f;
+	float attackDelay = 0.1f;
 };
 
 class SceneTemplate : public Scene
@@ -41,9 +43,16 @@ public:
 	bool IsOnDebugWall() const { return enabledDebugWall; }
 	bool IsOnDebugArea() const { return enabledDebugArea; }
 
+	void DeleteUsedBullets();
+	void DeleteDieZombies();
+	void DeleteEffects();
 public:
+	ObjectPool<Effect> effectPool;
 	ObjectPool<Zombie> zombiePool;
 	ObjectPool<Bullet> bulletPool;
+	std::list<Bullet*> delBulletList;
+	std::list<Zombie*> delZombieList;
+	std::list<Effect*> delEffectList;
 
 	// Item
 	float elapItem = 0.0f;
@@ -54,22 +63,24 @@ public:
 	float elapL = 0.0f;
 	float ZombieGenDelayL = 1.0f;
 	float ZombieGenDelayR = 1.0f;
-	int GenZombieCount = 10;
-	int CurrZombieCount = 10;
+	int GenZombieCount = 0;
+	int CurrZombieCount = 0;
 	SceneIds nextScene;
 	std::queue<ZombieType> GenListL;
 	std::queue<ZombieType> GenListR;
 
+	int currWave = 0;
 	static PlayerData playerData;
+	static int score;
 
 private:
 	TileMap* tilemap;
 	Player* player;
-	std::list<Zombie*> zombies;
 	SpawnArea spawnLeft;
 	SpawnArea spawnRight;
 	Wall walls[4];
 	ItemGenerator itemGen;
+	UIHub uihub;
 
 	bool enabledDebugBox = false;
 	bool enabledDebugWall = false;

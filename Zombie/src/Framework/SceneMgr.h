@@ -10,10 +10,10 @@ protected:
 	std::vector<Scene*> scenes;
 
 	Scene* currentSceneRaw = nullptr;
-	SceneIds startScene = SceneIds::SceneWave2;
+	SceneIds startScene = SceneIds::SceneWave4;
 	SceneIds currentScene;
 
-	SceneIds nextScene = SceneIds::None;
+	SceneIds nextScene = SceneIds::SceneWave1;
 
 	SceneMgr() = default;
 	virtual ~SceneMgr() = default;

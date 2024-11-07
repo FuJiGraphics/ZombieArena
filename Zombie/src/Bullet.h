@@ -42,7 +42,7 @@ private:
 	sf::Sprite body;
 	sf::Vector2f dir;
 	float speed;
-	float duration;
+	float duration = 7.f;
 	float elap = 0.0f;
 	float atk = 15.f;
 	bool isDie = false;

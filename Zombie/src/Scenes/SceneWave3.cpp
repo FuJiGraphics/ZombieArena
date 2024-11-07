@@ -2,15 +2,16 @@
 #include "SceneWave3.h"
 
 SceneWave3::SceneWave3()
-	: SceneTemplate(SceneIds::SceneWave2)
+	: SceneTemplate(SceneIds::SceneWave3)
 {
 }
 
 void SceneWave3::Init()
 {
+	currWave = 3;
+
 	// Player
-	playerData.moveSpeed = 120.f;
-	playerData.attackDelay = 0.4f;
+	playerData.attackDelay = 0.01f;
 
 	// Item
 	elapItem = 0.0f;
@@ -21,9 +22,7 @@ void SceneWave3::Init()
 	elapL = 0.0f;
 	ZombieGenDelayL = 1.0f;
 	ZombieGenDelayR = 1.0f;
-	GenZombieCount = 20;
-	CurrZombieCount = GenZombieCount;
-	nextScene = SceneIds::SceneWave1;
+	nextScene = SceneIds::SceneWave4;
 
 	// Zen Zombies
 	for (int i = 0; i < 7; ++i)

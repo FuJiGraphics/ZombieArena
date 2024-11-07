@@ -3,16 +3,27 @@
 
 class UIHub : public GameObject
 {
-protected:
-
-
 public:
 	UIHub() = default;
 	virtual ~UIHub() = default;
 
+	void Init() override;
+	void Release() override;
 
+	void Reset() override;
+
+	void Update(float dt) override;
+	void Draw(sf::RenderWindow& window) override;
+
+public:
+	void SetScore(int score);
+	void SetZombieCount(int count);
+	void SetWave(int wave);
+	void SetTargetCamera(Camera* target);
 
 private:
-	int zombieCount = 0;
-	int wave = 0;
+	TextUI<int> score;
+	TextUI<int> zombieCount;
+	TextUI<int> waveCount;
+	Camera* camera = nullptr;
 };
