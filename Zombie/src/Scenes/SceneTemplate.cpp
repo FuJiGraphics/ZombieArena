@@ -239,7 +239,10 @@ void SceneTemplate::Update(float dt)
 	if (GenListL.empty() && GenListR.empty() && CurrZombieCount <= 0)
 	{
 		SceneTemplate::Release();
-		SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, currScene);
+		if (currScene != LastWave)
+			SCENE_MGR.ChangeScene(SceneIds::SceneUpgrade, currScene);
+		else
+			SCENE_MGR.ChangeScene(SceneIds::SceneGameClear, currScene);
 		return;
 	}
 	// Game Over

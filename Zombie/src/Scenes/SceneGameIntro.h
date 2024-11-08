@@ -19,6 +19,8 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void Update(float dt) override;
 
+	void ResultDataLoad();
+
 private:
 	SceneIds nextScene = SceneIds::SceneSelect;
 	sf::Sprite background;

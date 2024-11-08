@@ -129,10 +129,19 @@ void SceneUpgrade::Update(float dt)
 			SceneTemplate::playerData.atk += 10.f;
 			break;
 		case 1:	 //"Increased Attack Speed",
-			SceneTemplate::playerData.attackDelay -= 0.03f;
+			if (SceneTemplate::playerData.weaponType == WeaponType::Minigun)
+			{
+				float ddx = SceneTemplate::playerData.attackDelay - 0.03f;
+				SceneTemplate::playerData.attackDelay = (ddx >= 0.0f) ? ddx : 0.0001f;
+			}
+			else
+			{
+				float ddx = SceneTemplate::playerData.attackDelay - 0.4f;
+				SceneTemplate::playerData.attackDelay = (ddx >= 0.0f) ? ddx : 0.4f;
+			}
 			break;
 		case 2:	 //"Increased Run Speed",
-			SceneTemplate::playerData.moveSpeed += 5.f;
+			SceneTemplate::playerData.moveSpeed += 10.f;
 			break;
 		case 3:	 //"Increased Max Health",
 			SceneTemplate::playerData.hp = 100.f;
@@ -163,6 +172,9 @@ void SceneUpgrade::SetCurrentScene(SceneIds id)
 		nextScene = SceneIds::SceneWave4;
 		break;
 	case SceneIds::SceneWave4:
+		nextScene = SceneIds::SceneWave5;
+		break;
+	case SceneIds::SceneWave5:
 		nextScene = SceneIds::SceneWave1;
 		break;
 	}

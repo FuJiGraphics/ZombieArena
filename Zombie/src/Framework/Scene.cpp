@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Scene.h"
 
+std::stack<std::string> SceneTemplate::resultData;
+
 Scene::Scene(SceneIds id)
 	: id(id)
 {

@@ -65,6 +65,7 @@ void Zombie::Update(float dt)
 {
 	if (isDie)
 		return;
+	OutOfRangeFix();
 
 	// hp Ç¥½Ã
 	hpDurationElap -= dt;
@@ -224,9 +225,9 @@ void Zombie::SetZombieType(ZombieType type)
 		TEXTURE_MGR.Load("Graphics/bloater.png");
 		body.setTexture(TEXTURE_MGR.Get("Graphics/bloater.png"));
 		this->SetAttack(70.f);
-		this->SetSpeed(89.f);
+		this->SetSpeed(85.f);
 		this->SetAttackSpeed(1.5f);
-		hp.SetMaxHp(5000);
+		hp.SetMaxHp(4000);
 		hp.SetSize(50.f, 5.f);
 		hp.SetOrigin(Origins::MC);
 		this->ResetBoundBox();
@@ -288,10 +289,10 @@ void Zombie::OnDamage(int damage)
 	hpDurationElap = hpDurationMax;
  	if (hp <= 0.0f)
 	{
+		--scene.CurrZombieCount;
 		hp = 0.0f;
 		isDie = true;
 		this->SetActive(false);
-		scene.CurrZombieCount -= 1;
 		scene.score += ((int)ZombieType::crawler * 100 + 100);
 		myPool->Return(this);
 		if (effectPool)
@@ -334,4 +335,24 @@ void Zombie::ResetBoundBox()
 	boundBox.setOutlineColor(sf::Color::Green);
 	boundBox.setOutlineThickness(3.0f);
 	Utils::SetOrigin(boundBox, Origins::MC);
+}
+
+bool Zombie::OutOfRangeFix()
+{
+	bool result = true;
+	auto& scene = *(SceneTemplate*)SCENE_MGR.GetCurrentScene();
+	const auto& tileSize = scene.tilemap->GetSize();
+	const auto& tilemapSize = scene.tilemap->GetLength();
+	const auto& tilemapPos = scene.tilemap->GetPosition();
+	sf::FloatRect boundBox = {
+		tilemapPos.x - ((tilemapSize.x * 0.5f) - tileSize.x),
+		tilemapPos.y - ((tilemapSize.y * 0.5f) - tileSize.y),
+		((tilemapSize.x) - tileSize.x),
+		((tilemapSize.y) - tileSize.y),
+	};
+	if (!boundBox.intersects(this->GetBoundBox()))
+		this->SetPosition({0.0f, 0.0f});
+	else
+		result = false;
+	return result;
 }

@@ -280,3 +280,16 @@ bool Utils::PolygonsIntersect(const std::vector<sf::Vector2f>& polygonA, const s
     }
     return true;
 }
+
+std::string Utils::getCurrentDateTime()
+{
+    auto now = std::chrono::system_clock::now();
+    time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+    tm local_tm;
+    localtime_s(&local_tm, &now_time);
+
+    std::stringstream ss;
+    ss << std::put_time(&local_tm, "%Y-%m-%d %H:%M:%S");
+    return ss.str();
+}

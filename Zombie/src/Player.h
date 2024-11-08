@@ -67,6 +67,7 @@ protected:
 	Camera* view;
 	HpBar hp;
 	unsigned int ammo = 0;
+	float focusElap = 0.0f;
 
 	SceneTemplate* scene = nullptr;
 	float delay;

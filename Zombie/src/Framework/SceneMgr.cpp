@@ -42,6 +42,12 @@ void SceneMgr::ChangeScene(SceneIds id, SceneIds currId)
 		case SceneIds::SceneGameOver:
 			currentSceneRaw = new SceneGameOver();
 			break; 
+		case SceneIds::SceneGameClear:
+			currentSceneRaw = new SceneGameClear();
+			break;
+		case SceneIds::SceneGameScores:
+			currentSceneRaw = new SceneGameScores();
+			break;
 		case SceneIds::SceneUpgrade: 
 			currentSceneRaw = new SceneUpgrade(); 
 			((SceneUpgrade*)currentSceneRaw)->SetCurrentScene(currId);
@@ -57,6 +63,9 @@ void SceneMgr::ChangeScene(SceneIds id, SceneIds currId)
 			break;
 		case SceneIds::SceneWave4:
 			currentSceneRaw = new SceneWave4(); 
+			break;
+		case SceneIds::SceneWave5:
+			currentSceneRaw = new SceneWave5();
 			break;
 		case SceneIds::ExitGame: 
 			isExitGame = true; 

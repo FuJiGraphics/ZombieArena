@@ -63,6 +63,7 @@ public:
 
 private:
 	void ResetBoundBox();
+	bool OutOfRangeFix();
 
 protected:
 	sf::Vector2f prevPos;

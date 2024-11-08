@@ -5,6 +5,7 @@ class Scene
 {
 protected:
 	Camera worldView;
+	static std::stack<std::string> resultData;
 	std::list<GameObject*> gameObjects;
 	std::list<GameObject*> addGameObjects;
 	std::list<GameObject*> removeGameObjects;

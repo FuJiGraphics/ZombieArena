@@ -10,6 +10,7 @@ SceneWave1::SceneWave1()
 void SceneWave1::Init()
 {
 	currWave = 1;
+	LastWave = SceneIds::SceneWave5;
 
 	// Player Start Stat
 	playerData.SetWeapon();

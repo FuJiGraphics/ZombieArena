@@ -20,13 +20,14 @@ void SceneGameIntro::Init()
 	float ty = -0.1f;
 	// 메뉴 리스트
 	const char* items[] = {
-		"GameStart",
+		"Game Start",
 		"Info",
+		"Score Board",
 		"Exit",
 	};
 
 	// 메뉴 설정
-	int menuSize = 3;
+	int menuSize = sizeof(items) / sizeof(const char *);
 	menuItems.resize(menuSize);
 	for (int i = 0; i < menuSize; ++i)
 	{
@@ -48,6 +49,9 @@ void SceneGameIntro::Init()
 		menuBounds[i].height = 80.0f;
 		ty += 0.1f;
 	}
+
+	// 결과 데이터 로드
+	ResultDataLoad();
 }
 
 void SceneGameIntro::Release()
@@ -126,7 +130,10 @@ void SceneGameIntro::Update(float dt)
 		case 1:	 //"Info",
 			nextScene = SceneIds::SceneGameInfo;
 			break;
-		case 2:	 //"Exit",
+		case 2:
+			nextScene = SceneIds::SceneGameScores;
+			break;
+		case 3:	 //"Exit",
 			nextScene = SceneIds::ExitGame;
 			break;
 	}
@@ -136,4 +143,25 @@ void SceneGameIntro::Update(float dt)
 		SCENE_MGR.ChangeScene(nextScene, SceneIds::SceneGameIntro);
 		return;
 	}
+}
+
+void SceneGameIntro::ResultDataLoad()
+{
+	using namespace std;
+
+	ifstream in;
+	in.open("meta/Result.txt", ios::in);
+	if (!in.is_open())
+	{
+		cerr << "파일 세이브 실패" << endl;
+		return;
+	}
+
+	string text;
+	while (std::getline(in, text))
+	{
+		Scene::resultData.push(text + '\n');
+	}
+
+	in.close();
 }

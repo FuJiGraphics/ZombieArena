@@ -104,6 +104,7 @@ void Player::Update(float dt)
 	else if (weaponType == WeaponType::Shotgun)
 		isClick = InputMgr::GetMouseButtonDown(sf::Mouse::Left);
 
+	focusElap += dt * 2.7f;
 	if (scene && isClick)
 	{
 		if (ammo > 0 && delayElap >= delay)
@@ -112,7 +113,8 @@ void Player::Update(float dt)
 			if (weaponType == WeaponType::Minigun)
 			{
 				ammo -= 1;
-				const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 15.0f, newDir);
+				focusElap = Utils::Clamp(focusElap, 0.0f, 15.f);
+				const sf::Vector2f& dir = Utils::RandomDirection(0.0f, focusElap, newDir);
 				Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
 				bullet->Init();
 				bullet->SetWeaponType(WeaponType::Minigun);
@@ -129,7 +131,7 @@ void Player::Update(float dt)
 				for (int i = 1; i <= 30; ++i)
 				{
 					ammo--;
-					const sf::Vector2f& dir = Utils::RandomDirection(0.0f, 45.0f, newDir);
+					const sf::Vector2f& dir = Utils::RandomDirection(-45.0f * 0.5f, 45.0f * 0.5f, newDir);
 					Bullet* bullet = scene->AddGo(scene->bulletPool.Take());
 					bullet->Init();
 					bullet->SetWeaponType(WeaponType::Shotgun);
@@ -150,6 +152,9 @@ void Player::Update(float dt)
 			}
 		}
 	}
+	else
+		focusElap = 0.0f;
+
 
 	
 	if (view)

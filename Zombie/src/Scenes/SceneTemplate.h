@@ -36,9 +36,9 @@ struct PlayerData
 				break;
 			case WeaponType::Shotgun:
 				moveSpeed = 90.f;
-				atk = 5.f;
+				atk = 7.f;
 				attackDelay = 2.0f;
-				ammoCount = 500;
+				ammoCount = 1000;
 				break;
 			case WeaponType::Rocket:
 				moveSpeed = 90.f;
@@ -105,18 +105,20 @@ public:
 	int GenZombieCount = 0;
 	int CurrZombieCount = 0;
 	SceneIds currScene;
+	SceneIds LastWave;
 	std::queue<ZombieType> GenListL;
 	std::queue<ZombieType> GenListR;
 
 	int currWave = 0;
 	static PlayerData playerData;
 	static int score;
-
-private:
 	TileMap* tilemap;
-	Player* player;
+
 	SpawnArea spawnLeft;
 	SpawnArea spawnRight;
+
+private:
+	Player* player;
 	Wall walls[4];
 	ItemGenerator itemGen;
 	UIHub uihub;

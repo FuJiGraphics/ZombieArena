@@ -14,6 +14,8 @@ enum class SceneIds
 	SceneGameInfo,
 	SceneGameIntro,
 	SceneGameOver,
+	SceneGameClear,
+	SceneGameScores,
 	SceneUpgrade,
 	SceneSelect,
 	SceneWave1,

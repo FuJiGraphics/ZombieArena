@@ -18,13 +18,13 @@ void SceneWave3::Init()
 	// Zombies
 	elapR = 0.0f;
 	elapL = 0.0f;
-	ZombieGenDelayL = 1.0f;
-	ZombieGenDelayR = 1.0f;
+	ZombieGenDelayL = 0.9f;
+	ZombieGenDelayR = 0.9f;
 
 	// Gen Zombies
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 		GenListL.push(ZombieType::crawler);
-	for (int j = 0; j < 20; ++j)
+	for (int j = 0; j < 30; ++j)
 		GenListR.push(ZombieType::crawler);
 	for (int i = 0; i < 10; ++i)
 		GenListL.push(ZombieType::chaser);
