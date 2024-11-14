@@ -19,6 +19,10 @@
 
 이 프로젝트는 [MIT License](./LICENSE)를 따릅니다.
 
+## 📖 개발 기록
+
+개발 진행 사항 및 상세 기록은 [여기](https://somber-argument-7f5.notion.site/SFML-13534146edba80a79f90e03681dae3bd)에서 확인할 수 있습니다.
+
 ---
 
 Zombie Arena는 경일 게임 아카데미 수업의 일환으로 개발되었으며, 그 외에 다음과 같은 기능을 직접 구현하였습니다:
